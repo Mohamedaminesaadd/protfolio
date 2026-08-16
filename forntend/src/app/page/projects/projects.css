@@ -1,0 +1,175 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+
+/* =========================================
+   PROJECTS SECTION
+   ========================================= */
+
+.projects-section {
+  position: relative;
+
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+  padding: 100px 6vw;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   SECTION HEADER
+   ========================================= */
+
+.section-header {
+  margin-bottom: 50px;
+
+  text-align: center;
+}
+
+
+/* Small terminal-style comment */
+
+.section-comment {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+
+  color: #00ff41;
+
+  letter-spacing: 0.5px;
+}
+
+.section-comment iconify-icon {
+  font-size: 18px;
+}
+
+
+/* =========================================
+   TITLE
+   ========================================= */
+
+.section-title {
+  margin: 0;
+
+  font-family:
+    'Fira Code',
+    'JetBrains Mono',
+    'Cascadia Code',
+    monospace;
+
+  font-size: clamp(2rem, 4vw, 3.5rem);
+
+  font-weight: 700;
+
+  color: #ffffff;
+
+  letter-spacing: -1px;
+}
+
+.section-title span {
+  color: #00d4ff;
+}
+
+
+/* =========================================
+   DESCRIPTION
+   ========================================= */
+
+.section-description {
+  max-width: 700px;
+
+  margin: 18px auto 0;
+
+  font-family:
+    'Fira Code',
+    'JetBrains Mono',
+    monospace;
+
+  font-size: 0.95rem;
+
+  line-height: 1.7;
+
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* =========================================
+   PROJECT GRID
+   ========================================= */
+
+.projects-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 28px;
+
+  width: 100%;
+}
+
+
+/* =========================================
+   PROJECT CARD
+   ========================================= */
+
+.projects-grid app-project-cart {
+  display: block;
+
+  min-width: 0;
+
+  height: 100%;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+  .projects-section {
+    padding: 80px 5vw;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+
+    gap: 24px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .projects-section {
+    padding: 70px 20px;
+  }
+
+  .section-header {
+    margin-bottom: 35px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-description {
+    font-size: 0.82rem;
+  }
+
+  .projects-grid {
+    gap: 20px;
+  }
+}

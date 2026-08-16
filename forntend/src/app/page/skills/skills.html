@@ -1,0 +1,62 @@
+<section class="skills-section">
+
+  <div class="section-header">
+
+    <div class="section-comment">
+      <iconify-icon icon="mdi:terminal"></iconify-icon>
+      <span>// technical_stack</span>
+    </div>
+
+    <h2 class="section-title">
+      Skills <span>&amp;</span> Competencies
+    </h2>
+
+    <p class="section-description">
+      Edge AI, Embedded Systems, Software Engineering
+      &amp; Intelligent Systems.
+    </p>
+
+  </div>
+
+
+  <div class="skills-grid">
+
+    <app-skills-card
+      categoryName="Machine Learning"
+      categoryIcon="mdi:brain"
+      [skills]="mlSkills">
+    </app-skills-card>
+
+    <app-skills-card
+      categoryName="Full-Stack Engineering"
+      categoryIcon="mdi:code-braces"
+      [skills]="fullStackSkills">
+    </app-skills-card>
+
+    <app-skills-card
+      categoryName="AI Agents & Generative AI"
+      categoryIcon="mdi:robot"
+      [skills]="aiAgentSkills">
+    </app-skills-card>
+
+    <app-skills-card
+      categoryName="Embedded Linux"
+      categoryIcon="mdi:linux"
+      [skills]="embeddedSkills">
+    </app-skills-card>
+
+    <app-skills-card
+      categoryName="Security Engineering"
+      categoryIcon="mdi:shield-lock"
+      [skills]="securitySkills">
+    </app-skills-card>
+
+    <app-skills-card
+      categoryName="Engineering Practices"
+      categoryIcon="mdi:tools"
+      [skills]="engineeringSkills">
+    </app-skills-card>
+
+  </div>
+
+</section>

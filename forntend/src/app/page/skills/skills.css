@@ -1,0 +1,311 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+
+/* =========================================
+   SKILLS SECTION
+   ========================================= */
+
+.skills-section {
+  position: relative;
+
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+
+  padding: 100px 6vw;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   SECTION HEADER
+   ========================================= */
+
+.section-header {
+  text-align: center;
+
+  max-width: 850px;
+
+  margin: 0 auto 55px;
+}
+
+
+/* =========================================
+   TERMINAL COMMENT
+   ========================================= */
+
+.section-comment {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-bottom: 14px;
+
+  font-family:
+    'Fira Code',
+    'JetBrains Mono',
+    'Cascadia Code',
+    monospace;
+
+  font-size: 0.85rem;
+
+  font-weight: 500;
+
+  color: #00ff41;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
+}
+
+
+.section-comment iconify-icon {
+  font-size: 18px;
+
+  color: #00ff41;
+}
+
+
+/* =========================================
+   SECTION TITLE
+   ========================================= */
+
+.section-title {
+  margin: 0;
+
+  font-family:
+    'Fira Code',
+    'JetBrains Mono',
+    'Cascadia Code',
+    monospace;
+
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+
+  line-height: 1.15;
+
+  font-weight: 700;
+
+  color: #ffffff;
+
+  letter-spacing: -1.5px;
+}
+
+
+.section-title span {
+  color: #00d4ff;
+
+  text-shadow:
+    0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+
+/* =========================================
+   DESCRIPTION
+   ========================================= */
+
+.section-description {
+  max-width: 720px;
+
+  margin: 20px auto 0;
+
+  font-family:
+    'Fira Code',
+    'JetBrains Mono',
+    'Cascadia Code',
+    monospace;
+
+  font-size: 0.9rem;
+
+  line-height: 1.8;
+
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* =========================================
+   SKILLS GRID
+   ========================================= */
+
+.skills-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 26px;
+
+  width: 100%;
+}
+
+
+/* =========================================
+   SKILLS CARD HOST
+   ========================================= */
+
+.skills-grid app-skills-card {
+  display: block;
+
+  width: 100%;
+
+  min-width: 0;
+
+  height: 100%;
+}
+
+
+/* =========================================
+   DESKTOP LARGE
+   ========================================= */
+
+@media (min-width: 1400px) {
+
+  .skills-section {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  .skills-grid {
+    gap: 30px;
+  }
+
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+  .skills-section {
+    padding: 80px 5vw;
+  }
+
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+
+    gap: 22px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL TABLET
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .skills-section {
+    padding: 75px 28px;
+  }
+
+
+  .section-header {
+    margin-bottom: 45px;
+  }
+
+
+  .section-title {
+    font-size: clamp(2rem, 7vw, 2.8rem);
+  }
+
+
+  .section-description {
+    font-size: 0.84rem;
+
+    line-height: 1.7;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  .skills-section {
+    padding: 65px 20px;
+  }
+
+
+  .section-header {
+    margin-bottom: 38px;
+  }
+
+
+  .section-comment {
+    font-size: 0.76rem;
+  }
+
+
+  .section-comment iconify-icon {
+    font-size: 16px;
+  }
+
+
+  .section-title {
+    font-size: 2rem;
+
+    letter-spacing: -1px;
+  }
+
+
+  .section-description {
+    margin-top: 16px;
+
+    font-size: 0.78rem;
+
+    line-height: 1.7;
+  }
+
+
+  .skills-grid {
+    gap: 18px;
+  }
+
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 420px) {
+
+  .skills-section {
+    padding: 55px 16px;
+  }
+
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+
+  .section-description {
+    font-size: 0.75rem;
+  }
+
+
+  .skills-grid {
+    gap: 16px;
+  }
+
+}

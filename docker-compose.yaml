@@ -1,0 +1,31 @@
+services:
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: personal-profile-chroma
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./chroma_data:/data
+
+    restart: unless-stopped
+
+
+  postgres:
+    image: postgres:16
+
+    container_name: personal-agent-postgres
+
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent_password
+      POSTGRES_DB: agent_memory
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped

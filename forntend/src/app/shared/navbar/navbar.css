@@ -1,0 +1,586 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+
+/* =========================================
+   NAVBAR
+   ========================================= */
+
+.navbar {
+  position: fixed;
+
+  top: 50%;
+  left: 28px;
+
+  transform: translateY(-50%);
+
+  z-index: 1000;
+
+  width: 72px;
+
+  padding: 18px 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 30px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 12, 20, 0.92),
+      rgba(5, 8, 14, 0.88)
+    );
+
+  border:
+    1px solid rgba(0, 212, 255, 0.18);
+
+  border-radius: 18px;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 0 30px rgba(0, 212, 255, 0.06),
+    inset 0 0 20px rgba(0, 212, 255, 0.02);
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   FOCUS
+   ========================================= */
+
+.nav-link:focus-visible,
+.nav-logo:focus-visible {
+  outline: 2px solid #00d4ff;
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================
+   LOGO
+   ========================================= */
+
+.nav-logo {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+.logo-bracket {
+  color: #00d4ff;
+}
+
+
+.logo-name {
+  color: #ffffff;
+}
+
+
+/* =========================================
+   LINKS CONTAINER
+   ========================================= */
+
+.nav-links {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+
+/* =========================================
+   NAV LINK
+   ========================================= */
+
+.nav-link {
+  position: relative;
+
+  width: 52px;
+  height: 58px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  text-decoration: none;
+
+  border-radius: 10px;
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+/* =========================================
+   NUMBER
+   ========================================= */
+
+.nav-number {
+  position: absolute;
+
+  top: 3px;
+  right: 6px;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.48rem;
+
+  opacity: 0.5;
+}
+
+
+/* =========================================
+   ICON
+   ========================================= */
+
+.nav-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 20px;
+
+  line-height: 1;
+}
+
+
+/* =========================================
+   LABEL
+   ========================================= */
+
+.nav-label {
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.48rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   HOVER
+   ========================================= */
+
+.nav-link:hover {
+  color: #00d4ff;
+
+  background:
+    rgba(0, 212, 255, 0.08);
+
+  transform:
+    translateX(4px);
+}
+
+
+/* =========================================
+   ACTIVE
+   ========================================= */
+
+.nav-link.active {
+  color: #00ff41;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 255, 65, 0.12),
+      rgba(0, 212, 255, 0.06)
+    );
+
+  box-shadow:
+    inset 0 0 15px rgba(0, 255, 65, 0.05),
+    0 0 15px rgba(0, 255, 65, 0.08);
+}
+
+
+.nav-link.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: -11px;
+
+  width: 3px;
+  height: 28px;
+
+  border-radius:
+    0 4px 4px 0;
+
+  background:
+    #00ff41;
+
+  box-shadow:
+    0 0 10px #00ff41;
+}
+
+
+/* =========================================
+   STATUS
+   ========================================= */
+
+.nav-status {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 5px;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.45rem;
+
+  color:
+    rgba(255, 255, 255, 0.35);
+}
+
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background:
+    #00ff41;
+
+  box-shadow:
+    0 0 8px #00ff41;
+
+  animation:
+    pulse 2s infinite;
+}
+
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE NAVBAR
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .navbar {
+    top: auto;
+
+    /*
+     * Navbar is higher than before.
+     * Previous: 12px
+     * New:      28px
+     */
+    bottom:
+      calc(
+        28px + env(safe-area-inset-bottom)
+      );
+
+    left: 50%;
+
+    transform:
+      translateX(-50%);
+
+    width: auto;
+
+    padding:
+      8px 12px;
+
+    flex-direction: row;
+
+    gap: 10px;
+
+    border-radius:
+      16px;
+
+    box-shadow:
+      0 10px 35px rgba(0, 0, 0, 0.45),
+      0 0 25px rgba(0, 212, 255, 0.05),
+      inset 0 0 15px rgba(0, 212, 255, 0.02);
+  }
+
+
+  /* -----------------------------------------
+     HIDE DESKTOP ELEMENTS
+  ----------------------------------------- */
+
+  .nav-logo,
+  .nav-status,
+  .nav-number {
+    display: none;
+  }
+
+
+  /* -----------------------------------------
+     MOBILE LINKS
+  ----------------------------------------- */
+
+  .nav-links {
+    flex-direction: row;
+
+    gap: 4px;
+
+    max-width:
+      calc(100vw - 24px);
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling:
+      touch;
+  }
+
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  /* -----------------------------------------
+     MOBILE LINK
+  ----------------------------------------- */
+
+  .nav-link {
+    flex:
+      0 0 52px;
+
+    height:
+      48px;
+
+    border-radius:
+      9px;
+
+    transform:
+      none;
+  }
+
+
+  .nav-link:hover {
+    transform:
+      translateY(-2px);
+  }
+
+
+  /* -----------------------------------------
+     ACTIVE INDICATOR
+  ----------------------------------------- */
+
+  .nav-link.active::before {
+    left:
+      50%;
+
+    top:
+      -5px;
+
+    width:
+      22px;
+
+    height:
+      2px;
+
+    transform:
+      translateX(-50%);
+
+    border-radius:
+      4px;
+
+    box-shadow:
+      0 0 8px #00ff41;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+  .navbar {
+    width:
+      calc(100vw - 16px);
+
+    max-width:
+      360px;
+
+    box-sizing:
+      border-box;
+
+    padding:
+      6px 8px;
+
+    /*
+     * Keep navbar higher on small phones too.
+     */
+    bottom:
+      calc(
+        28px + env(safe-area-inset-bottom)
+      );
+
+    border-radius:
+      14px;
+  }
+
+
+  .nav-links {
+    width:
+      100%;
+
+    max-width:
+      100%;
+
+    justify-content:
+      space-between;
+
+    gap:
+      2px;
+  }
+
+
+  .nav-link {
+    flex:
+      0 0 48px;
+
+    height:
+      46px;
+
+    border-radius:
+      8px;
+  }
+
+
+  .nav-icon {
+    font-size:
+      18px;
+  }
+
+
+  .nav-label {
+    font-size:
+      0.43rem;
+
+    letter-spacing:
+      0.3px;
+  }
+
+}
+
+
+/* =========================================
+   VERY SMALL PHONES
+   ========================================= */
+
+@media (max-width: 360px) {
+
+  .navbar {
+    width:
+      calc(100vw - 12px);
+
+    bottom:
+      calc(
+        24px + env(safe-area-inset-bottom)
+      );
+
+    padding:
+      5px 6px;
+  }
+
+
+  .nav-link {
+    flex:
+      0 0 44px;
+
+    height:
+      44px;
+  }
+
+
+  .nav-icon {
+    font-size:
+      17px;
+  }
+
+
+  .nav-label {
+    font-size:
+      0.4rem;
+  }
+
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .navbar,
+  .nav-link,
+  .status-dot {
+    transition:
+      none !important;
+
+    animation:
+      none !important;
+  }
+
+}

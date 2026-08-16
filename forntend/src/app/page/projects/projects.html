@@ -1,0 +1,37 @@
+<section class="projects-section">
+
+  <div class="section-header">
+    <span class="section-comment">
+      <iconify-icon icon="solar:case-round-bold"></iconify-icon>
+      my projects
+    </span>
+
+    <h2 class="section-title">
+      Projects<span>{{ '{' }}</span>
+    </h2>
+
+    <p class="section-description">
+      A selection of projects built with modern technologies,
+      AI, backend systems, and cloud infrastructure.
+    </p>
+  </div>
+
+
+  <div class="projects-grid">
+
+    <app-project-cart
+      *ngFor="let project of projects"
+
+      [fileName]="project.fileName"
+      [fileIcon]="project.fileIcon"
+      [tags]="project.tags"
+      [liveUrl]="project.liveUrl"
+      [codeUrl]="project.codeUrl">
+
+      <span [innerHTML]="project.code"></span>
+
+    </app-project-cart>
+
+  </div>
+
+</section>

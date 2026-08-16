@@ -1,0 +1,112 @@
+:host {
+  display: block;
+
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  position: relative;
+
+  background: #0a0a0a;
+
+  overflow-x: clip;
+}
+
+
+/* =========================================================
+   GLOBAL BACKGROUND
+   ========================================================= */
+
+/*
+ * These two components are the background layer.
+ * They cover the ENTIRE viewport, including the navbar area.
+ */
+
+app-matrix-background,
+app-particle-background {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  pointer-events: none;
+}
+
+
+/* Matrix */
+
+app-matrix-background {
+  z-index: 0;
+}
+
+
+/* Particles */
+
+app-particle-background {
+  z-index: 1;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+app-navbar {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  z-index: 100;
+}
+
+
+/* =========================================================
+   PAGE CONTENT
+   ========================================================= */
+
+.app-content {
+  position: relative;
+
+  z-index: 10;
+
+  width: 100%;
+
+  min-height: 100vh;
+
+  /*
+   * Only the CONTENT is shifted.
+   * The background is NOT shifted.
+   */
+  padding-left: 120px;
+
+  box-sizing: border-box;
+
+  min-width: 0;
+
+  overflow-x: clip;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .app-content {
+    padding-left: 0;
+
+    padding-bottom:
+      calc(96px + env(safe-area-inset-bottom));
+  }
+
+}

@@ -1,0 +1,277 @@
+<section class="section contact-section">
+
+  <div class="section-inner">
+
+    <!-- HEADER -->
+
+    <div class="section-header">
+
+
+      <p class="section-description">
+        Have a project, idea or opportunity?
+        Let's build something intelligent.
+      </p>
+
+    </div>
+
+
+    <!-- CONTACT CONTENT -->
+
+    <div class="contact-container">
+
+      <!-- =========================================
+           TERMINAL INFORMATION
+      ========================================== -->
+
+      <div class="contact-terminal">
+
+        <div class="terminal-header">
+
+          <div class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+
+          <span class="terminal-title">
+            ~/contact - bash
+          </span>
+
+        </div>
+
+
+        <div class="terminal-body">
+
+          <div class="terminal-line">
+
+            <span class="prompt">
+              $
+            </span>
+
+            <span>
+              contact --info
+            </span>
+
+          </div>
+
+
+          <div class="terminal-output">
+
+            <!-- EMAIL -->
+
+            <div class="contact-info-item">
+
+              <span class="info-label">
+                email
+              </span>
+
+              <a
+                href="mailto:meadaminee2002@gmail.com"
+                class="info-value"
+              >
+                meadaminee2002@gmail.com
+              </a>
+
+            </div>
+
+
+            <!-- GITHUB -->
+
+            <div class="contact-info-item">
+
+              <span class="info-label">
+                github
+              </span>
+
+              <a
+                href="https://github.com/Mohamedaminesaadd"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="info-value"
+              >
+                github.com/Mohamedaminesaadd
+              </a>
+
+            </div>
+
+
+            <!-- LINKEDIN -->
+
+            <div class="contact-info-item">
+
+              <span class="info-label">
+                linkedin
+              </span>
+
+              <a
+                href="https://www.linkedin.com/in/mohamed-amine-50956b296/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="info-value"
+              >
+                linkedin.com/in/mohamed-amine-50956b296
+              </a>
+
+            </div>
+
+
+            <!-- HUGGING FACE -->
+
+            <div class="contact-info-item">
+
+              <span class="info-label">
+                huggingface
+              </span>
+
+              <a
+                href="https://huggingface.co/moahmedamine"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="info-value"
+              >
+                huggingface.co/moahmedamine
+              </a>
+
+            </div>
+
+          </div>
+
+
+          <!-- FINAL COMMAND -->
+
+          <div class="terminal-line final-command">
+
+            <span class="prompt">
+              $
+            </span>
+
+            <span>
+              ready_to_build<span class="cursor">_</span>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================================
+           CONTACT FORM
+      ========================================== -->
+
+      <div class="contact-form-card">
+
+        <div class="form-header">
+
+          <div class="form-icon">
+            &lt;/&gt;
+          </div>
+
+          <div>
+
+            <h3>
+              Send a message
+            </h3>
+
+            <span>
+              Let's start a conversation
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <form
+          (ngSubmit)="sendMessage()"
+          #contactForm="ngForm"
+        >
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label for="name">
+              name
+            </label>
+
+            <input
+              id="name"
+              name="name"
+              type="text"
+              [(ngModel)]="contact.name"
+              placeholder="Your name"
+              required
+            />
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label for="email">
+              email
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              [(ngModel)]="contact.email"
+              placeholder="you@example.com"
+              required
+            />
+
+          </div>
+
+
+          <!-- MESSAGE -->
+
+          <div class="form-group">
+
+            <label for="message">
+              message
+            </label>
+
+            <textarea
+              id="message"
+              name="message"
+              [(ngModel)]="contact.message"
+              placeholder="Tell me about your project..."
+              rows="6"
+              required
+            ></textarea>
+
+          </div>
+
+
+          <!-- SUBMIT -->
+
+          <button
+            type="submit"
+            class="submit-button"
+            [disabled]="contactForm.invalid"
+          >
+
+            <span>
+              ./send_message
+            </span>
+
+            <span class="button-arrow">
+              →
+            </span>
+
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

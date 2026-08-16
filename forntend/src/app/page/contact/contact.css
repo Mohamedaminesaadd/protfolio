@@ -1,0 +1,1014 @@
+/* =========================================================
+   CONTACT SECTION
+========================================================= */
+
+.contact-section {
+  position: relative;
+
+  width: 100%;
+
+  padding:
+    100px 6vw 120px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SECTION DESCRIPTION
+========================================================= */
+
+.contact-section .section-description {
+  max-width: 720px;
+
+  margin: 18px auto 0;
+
+  color: #b8c0ca;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    "Cascadia Code",
+    Consolas,
+    monospace;
+
+  font-size: 0.82rem;
+
+  line-height: 1.8;
+
+  letter-spacing: 0.01em;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.025);
+}
+
+
+/* =========================================================
+   CONTACT CONTAINER
+   Same general width/height feeling as About terminal
+========================================================= */
+
+.contact-container {
+  width: 100%;
+
+  max-width: 1180px;
+
+  min-height: 520px;
+
+  margin:
+    55px auto 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.95fr)
+    minmax(0, 1.05fr);
+
+  gap: 28px;
+
+  align-items: stretch;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SHARED CARD
+========================================================= */
+
+.contact-terminal,
+.contact-form-card {
+  position: relative;
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 520px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 17, 23, 0.97),
+      rgba(10, 13, 17, 0.98)
+    );
+
+  border:
+    1px solid #30363d;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.01);
+
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   TOP ACCENT
+========================================================= */
+
+.contact-terminal::before,
+.contact-form-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+
+  left: 10%;
+  right: 10%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 212, 255, 0.45),
+      rgba(0, 255, 65, 0.35),
+      transparent
+    );
+
+  opacity: 0.7;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.contact-terminal:hover,
+.contact-form-card:hover {
+  transform:
+    translateY(-3px);
+
+  border-color:
+    #444c56;
+
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.48),
+    0 0 25px rgba(0, 212, 255, 0.035);
+}
+
+
+/* =========================================================
+   TERMINAL HEADER
+========================================================= */
+
+.terminal-header {
+  display: flex;
+
+  align-items: center;
+
+  min-height: 42px;
+
+  padding:
+    0 17px;
+
+  box-sizing: border-box;
+
+  background:
+    #161b22;
+
+  border-bottom:
+    1px solid #30363d;
+}
+
+
+.terminal-dots {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-right: 15px;
+}
+
+
+.dot {
+  width: 10px;
+  height: 10px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+
+.dot.red {
+  background: #ff5f56;
+}
+
+
+.dot.yellow {
+  background: #ffbd2e;
+}
+
+
+.dot.green {
+  background: #27c93f;
+}
+
+
+.terminal-title {
+  color:
+    #8b949e;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.68rem;
+
+  white-space:
+    nowrap;
+}
+
+
+/* =========================================================
+   TERMINAL BODY
+========================================================= */
+
+.terminal-body {
+  padding:
+    32px;
+
+  box-sizing: border-box;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+}
+
+
+/* =========================================================
+   TERMINAL COMMAND
+========================================================= */
+
+.terminal-line {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 10px;
+
+  color:
+    #c9d1d9;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.74rem;
+
+  line-height:
+    1.8;
+}
+
+
+.prompt {
+  flex-shrink: 0;
+
+  color:
+    #3fb950;
+
+  font-weight:
+    700;
+
+  text-shadow:
+    0 0 7px rgba(63, 185, 80, 0.3);
+}
+
+
+/* =========================================================
+   CONTACT OUTPUT
+========================================================= */
+
+.terminal-output {
+  margin:
+    25px 0 32px;
+
+  padding-left:
+    28px;
+}
+
+
+/* =========================================================
+   CONTACT INFO ITEM
+========================================================= */
+
+.contact-info-item {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    5px;
+
+  padding:
+    15px 0;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.055);
+}
+
+
+.contact-info-item:last-child {
+  border-bottom:
+    none;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.info-label {
+  color:
+    #6e7681;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    monospace;
+
+  font-size:
+    0.61rem;
+
+  font-weight:
+    500;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.12em;
+}
+
+
+/* =========================================================
+   VALUE
+========================================================= */
+
+.info-value {
+  color:
+    #79c0ff;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.73rem;
+
+  line-height:
+    1.6;
+
+  text-decoration:
+    none;
+
+  word-break:
+    break-word;
+
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+
+a.info-value:hover {
+  color:
+    #7ee787;
+
+  text-shadow:
+    0 0 9px rgba(126, 231, 135, 0.25);
+}
+
+
+/* =========================================================
+   FINAL COMMAND
+========================================================= */
+
+.final-command {
+  margin-top:
+    14px;
+
+  color:
+    #8b949e;
+}
+
+
+.cursor {
+  color:
+    #3fb950;
+
+  animation:
+    cursorBlink 1s steps(2) infinite;
+}
+
+
+@keyframes cursorBlink {
+
+  50% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.contact-form-card {
+  padding:
+    32px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    flex-start;
+}
+
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+.form-header {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    14px;
+
+  margin-bottom:
+    28px;
+
+  padding-bottom:
+    20px;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.07);
+}
+
+
+.form-icon {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    44px;
+
+  height:
+    44px;
+
+  flex-shrink:
+    0;
+
+  border:
+    1px solid rgba(0, 255, 65, 0.28);
+
+  border-radius:
+    10px;
+
+  background:
+    rgba(0, 255, 65, 0.035);
+
+  color:
+    #3fb950;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size:
+    0.8rem;
+
+  box-shadow:
+    0 0 18px rgba(0, 255, 65, 0.025);
+}
+
+
+.form-header h3 {
+  margin:
+    0 0 5px;
+
+  color:
+    #f0f6fc;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.98rem;
+
+  font-weight:
+    600;
+}
+
+
+.form-header span {
+  color:
+    #8b949e;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size:
+    0.65rem;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+form {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    18px;
+}
+
+
+.form-group {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    7px;
+}
+
+
+.form-group label {
+  color:
+    #9da7b3;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size:
+    0.63rem;
+
+  font-weight:
+    500;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.09em;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.form-group input,
+.form-group textarea {
+  width:
+    100%;
+
+  box-sizing:
+    border-box;
+
+  padding:
+    12px 13px;
+
+  border:
+    1px solid rgba(139, 148, 158, 0.24);
+
+  border-radius:
+    7px;
+
+  outline:
+    none;
+
+  background:
+    #0d1117;
+
+  color:
+    #f0f6fc;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.71rem;
+
+  line-height:
+    1.5;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.form-group textarea {
+  resize:
+    vertical;
+
+  min-height:
+    140px;
+}
+
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color:
+    #6e7681;
+}
+
+
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color:
+    rgba(139, 148, 158, 0.38);
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color:
+    rgba(0, 212, 255, 0.5);
+
+  background:
+    #0f141a;
+
+  box-shadow:
+    0 0 0 2px rgba(0, 212, 255, 0.035),
+    0 0 18px rgba(0, 212, 255, 0.045);
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.submit-button {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  width:
+    100%;
+
+  margin-top:
+    5px;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid rgba(0, 255, 65, 0.3);
+
+  border-radius:
+    7px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 255, 65, 0.055),
+      rgba(0, 212, 255, 0.035)
+    );
+
+  color:
+    #3fb950;
+
+  cursor:
+    pointer;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    monospace;
+
+  font-size:
+    0.7rem;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.submit-button:hover:not(:disabled) {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 255, 65, 0.1),
+      rgba(0, 212, 255, 0.06)
+    );
+
+  border-color:
+    rgba(0, 255, 65, 0.7);
+
+  box-shadow:
+    0 0 20px rgba(0, 255, 65, 0.08);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.submit-button:disabled {
+  opacity:
+    0.35;
+
+  cursor:
+    not-allowed;
+}
+
+
+.button-arrow {
+  color:
+    #79c0ff;
+
+  font-size:
+    1rem;
+
+  transition:
+    transform 0.2s ease;
+}
+
+
+.submit-button:hover:not(:disabled) .button-arrow {
+  transform:
+    translateX(4px);
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .contact-section {
+    padding:
+      85px 5vw 100px;
+  }
+
+
+  .contact-container {
+    max-width:
+      900px;
+
+    grid-template-columns:
+      1fr;
+
+    min-height:
+      auto;
+
+    gap:
+      24px;
+  }
+
+
+  .contact-terminal,
+  .contact-form-card {
+    min-height:
+      480px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .contact-section {
+    padding:
+      70px 20px 80px;
+  }
+
+
+  .contact-section .section-description {
+    max-width:
+      100%;
+
+    font-size:
+      0.74rem;
+
+    line-height:
+      1.75;
+  }
+
+
+  .contact-container {
+    margin-top:
+      40px;
+
+    gap:
+      18px;
+  }
+
+
+  .contact-terminal,
+  .contact-form-card {
+    min-height:
+      auto;
+
+    border-radius:
+      9px;
+  }
+
+
+  .terminal-body,
+  .contact-form-card {
+    padding:
+      22px 18px;
+  }
+
+
+  .terminal-output {
+    padding-left:
+      15px;
+  }
+
+
+  .contact-info-item {
+    padding:
+      12px 0;
+  }
+
+
+  .info-value {
+    font-size:
+      0.68rem;
+  }
+
+
+  .form-header {
+    margin-bottom:
+      22px;
+  }
+
+
+  .form-icon {
+    width:
+      40px;
+
+    height:
+      40px;
+  }
+
+
+  .form-group textarea {
+    min-height:
+      120px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .contact-section {
+    padding:
+      60px 14px 70px;
+  }
+
+
+  .contact-container {
+    margin-top:
+      32px;
+  }
+
+
+  .terminal-body,
+  .contact-form-card {
+    padding:
+      18px 15px;
+  }
+
+
+  .terminal-line {
+    font-size:
+      0.67rem;
+  }
+
+
+  .info-label {
+    font-size:
+      0.56rem;
+  }
+
+
+  .info-value {
+    font-size:
+      0.63rem;
+  }
+
+
+  .form-header h3 {
+    font-size:
+      0.88rem;
+  }
+
+
+  .form-header span {
+    font-size:
+      0.59rem;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .contact-terminal,
+  .contact-form-card,
+  .submit-button,
+  .button-arrow {
+    transition:
+      none !important;
+  }
+
+
+  .cursor {
+    animation:
+      none !important;
+
+    opacity:
+      1;
+  }
+
+}

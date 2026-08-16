@@ -1,0 +1,482 @@
+/* =========================================================
+   TERMINAL WINDOW
+   ========================================================= */
+
+.terminal-window {
+  position: relative;
+  flex: 1;
+  height: 98%;
+  min-width: 400px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.01);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.terminal-window:hover {
+  border-color: #444c56;
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(0, 255, 65, 0.025);
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   TERMINAL HEADER
+   ========================================================= */
+
+.terminal-header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+
+
+/* =========================================================
+   TERMINAL DOTS
+   ========================================================= */
+
+.terminal-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 14px;
+}
+
+.terminal-dots .dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+
+.terminal-dots .dot:hover {
+  transform: scale(1.12);
+}
+
+.terminal-dots .red {
+  background: #ff5f57;
+}
+
+.terminal-dots .yellow {
+  background: #febc2e;
+}
+
+.terminal-dots .green {
+  background: #28c840;
+}
+
+
+/* =========================================================
+   TERMINAL TITLE
+   ========================================================= */
+
+.terminal-title {
+  color: #8b949e;
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+  font-size: 0.72rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.terminal-title::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #3fb950;
+  vertical-align: 1px;
+}
+
+
+/* =========================================================
+   TERMINAL BODY
+   ========================================================= */
+
+.terminal-body {
+  position: relative;
+  padding: 28px 30px 32px;
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+  overflow: hidden;
+  background: #0d1117;
+}
+
+
+/* =========================================================
+   SUBTLE GRID
+   ========================================================= */
+
+.terminal-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px
+    );
+  background-size: 100% 24px;
+  opacity: 0.35;
+}
+
+
+/* =========================================================
+   AI CHIP
+   ========================================================= */
+
+.hero-chip {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  padding: 5px 10px;
+  border: 1px solid #30363d;
+  border-radius: 5px;
+  background: #161b22;
+  color: #8b949e;
+  font-family:
+    "Fira Code",
+    monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.01em;
+}
+
+.chip-icon {
+  color: #3fb950;
+  font-size: 0.75rem;
+  text-shadow:
+    0 0 6px rgba(63, 185, 80, 0.4);
+  animation:
+    chipPulse 2s ease-in-out infinite;
+}
+
+@keyframes chipPulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   CODE LINE
+   ========================================================= */
+
+.code-line {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 7px;
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+  font-size:
+    clamp(0.75rem, 1.4vw, 0.9rem);
+  line-height: 1.8;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PROMPT
+   ========================================================= */
+
+.code-line .prompt {
+  flex-shrink: 0;
+  margin-right: 10px;
+  color: #3fb950;
+  font-weight: 600;
+  text-shadow:
+    0 0 5px rgba(63, 185, 80, 0.35);
+}
+
+
+/* =========================================================
+   COMMAND
+   ========================================================= */
+
+.code-line .command {
+  color: #79c0ff;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   OUTPUT
+   ========================================================= */
+
+.code-line.output {
+  position: relative;
+  padding-left: 27px;
+  margin-bottom: 18px;
+  color: #c9d1d9;
+  font-size:
+    clamp(0.75rem, 1.4vw, 0.9rem);
+}
+
+.code-line.output::before {
+  content: "↳";
+  position: absolute;
+  left: 6px;
+  color: #484f58;
+  opacity: 0.8;
+}
+
+
+/* =========================================================
+   TYPING TEXT - FIXED
+   ========================================================= */
+
+.typing-text {
+  color: #c9d1d9;
+  font-weight: 400;
+  letter-spacing: 0;
+  word-break: break-word;
+  display: inline-block; /* Added */
+  min-height: 1.2em; /* Added to prevent jumping */
+}
+
+.name-text {
+  color: #f0f6fc;
+}
+
+
+/* =========================================================
+   LOCATION
+   ========================================================= */
+
+.location-text {
+  color: #7ee787;
+  text-shadow:
+    0 0 7px rgba(126, 231, 135, 0.12);
+}
+
+
+/* =========================================================
+   TYPING CURSOR - FIXED
+   ========================================================= */
+
+.typing-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  background: #3fb950;
+  box-shadow:
+    0 0 6px rgba(63, 185, 80, 0.55);
+  /* FIX: Use a simpler animation without steps */
+  animation: terminalBlink 0.9s ease-in-out infinite;
+  /* Added to prevent layout shift */
+  position: relative;
+  top: 1px;
+}
+
+@keyframes terminalBlink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+
+/* =========================================================
+   FINAL PROMPT
+   ========================================================= */
+
+.final-prompt {
+  margin-top: 22px;
+  margin-bottom: 0;
+  padding-top: 16px;
+  border-top:
+    1px solid #21262d;
+}
+
+.final-prompt .command {
+  color: #d2a8ff;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   FINAL CURSOR - FIXED
+   ========================================================= */
+
+.terminal-cursor {
+  color: #3fb950;
+  margin-left: 2px;
+  text-shadow:
+    0 0 6px rgba(63, 185, 80, 0.45);
+  animation: terminalBlink 0.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   SCAN LINE - FIXED
+   ========================================================= */
+
+.terminal-window::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10%;
+  height: 1px;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(63, 185, 80, 0.15),
+      transparent
+    );
+  animation: terminalScan 9s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes terminalScan {
+  0% {
+    top: -5%;
+  }
+  100% {
+    top: 105%;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION - IMPROVED
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-window,
+  .chip-icon,
+  .typing-cursor,
+  .terminal-cursor,
+  .terminal-window::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Show cursor as static when motion is reduced */
+  .typing-cursor {
+    opacity: 1 !important;
+    background: #3fb950;
+  }
+  
+  .terminal-cursor {
+    opacity: 1 !important;
+  }
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .terminal-body {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .terminal-body {
+    padding: 22px 20px 26px;
+  }
+  .terminal-header {
+    height: 42px;
+    padding: 0 13px;
+  }
+  .terminal-dots {
+    gap: 6px;
+    margin-right: 12px;
+  }
+  .terminal-dots .dot {
+    width: 9px;
+    height: 9px;
+  }
+  .terminal-title {
+    font-size: 0.65rem;
+  }
+  .hero-chip {
+    margin-bottom: 22px;
+  }
+  .code-line {
+    font-size: 0.74rem;
+  }
+  .code-line.output {
+    padding-left: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .terminal-window {
+    min-width: 0;
+  }
+
+  .terminal-window {
+    border-radius: 7px;
+  }
+  .terminal-header {
+    padding: 10px 12px;
+  }
+  .terminal-body {
+    padding: 18px 14px 22px;
+  }
+  .terminal-title {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.6rem;
+  }
+  .hero-chip {
+    font-size: 0.6rem;
+    padding: 5px 9px;
+  }
+  .code-line {
+    font-size: 0.68rem;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .code-line .prompt {
+    margin-right: 7px;
+  }
+  .code-line.output {
+    padding-left: 18px;
+  }
+}

@@ -1,0 +1,150 @@
+/* =========================================================
+   CODE EDITOR
+========================================================= */
+
+.code-editor {
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-card);
+}
+
+
+/* =========================================================
+   EDITOR HEADER
+========================================================= */
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  padding: 11px 15px;
+  background-color: #000000;
+  border-bottom: 1px solid var(--border-color);
+}
+
+
+/* =========================================================
+   EDITOR DOTS
+========================================================= */
+
+.editor-dots {
+  display: flex;
+  gap: 6px;
+  margin-right: 14px;
+}
+
+.editor-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.editor-dots span:nth-child(1) {
+  background: #ff5f56;
+}
+
+.editor-dots span:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.editor-dots span:nth-child(3) {
+  background: #27c93f;
+}
+
+
+/* =========================================================
+   EDITOR TITLE
+========================================================= */
+
+.editor-title {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   EDITOR BODY
+========================================================= */
+
+.editor-body {
+  padding: 25px 20px;
+  overflow-x: auto;
+  font-size: clamp(0.68rem, 1.2vw, 0.82rem);
+  line-height: 2;
+  background-color: #1e1e1e; /* Dark background like VS Code */
+}
+
+
+/* =========================================================
+   CODE ROW
+========================================================= */
+
+.code-row {
+  display: flex;
+  min-width: max-content;
+}
+
+
+/* =========================================================
+   LINE NUMBER
+========================================================= */
+
+.line-number {
+  width: 35px;
+  margin-right: 18px;
+  color: var(--text-dim);
+  user-select: none;
+  text-align: right;
+}
+
+
+/* =========================================================
+   BRACES
+========================================================= */
+
+.code-brace-open::before {
+  content: '{';
+}
+
+.code-brace-close::before {
+  content: '}';
+}
+
+
+/* =========================================================
+   CODE COLORS - VS Code Dark+ Theme
+========================================================= */
+
+/* Keywords: const, let, etc. */
+.keyword {
+  color: #ff7b72; /* Salmon/red */
+}
+
+/* Variables: developer, user, etc. */
+.variable {
+  color: #79b8ff; /* Light blue */
+}
+
+/* Properties: name, brand, etc. */
+.property {
+  color: #7ee787; /* Green */
+}
+
+/* Strings: "John Doe", "Google", etc. */
+.string {
+  color: #e1e4e8; /* Off-white/light gray */
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+  .editor-body {
+    padding: 20px 14px;
+    font-size: 0.65rem;
+  }
+}

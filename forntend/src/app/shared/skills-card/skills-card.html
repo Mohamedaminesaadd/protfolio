@@ -1,0 +1,35 @@
+<div class="skill-category">
+
+  <div class="category-header">
+
+    <span class="folder-icon">
+      <iconify-icon [attr.icon]="categoryIcon"></iconify-icon>
+    </span>
+
+    <span class="category-name">
+      {{ categoryName }}
+    </span>
+
+  </div>
+
+
+  <div class="skill-items">
+
+    <div
+      class="skill-item"
+      *ngFor="let skill of skills"
+    >
+
+      <div class="skill-icon">
+        <iconify-icon [attr.icon]="skill.icon"></iconify-icon>
+      </div>
+
+      <span class="skill-name">
+        {{ skill.name }}
+      </span>
+
+    </div>
+
+  </div>
+
+</div>

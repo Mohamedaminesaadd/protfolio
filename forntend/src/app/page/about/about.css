@@ -1,0 +1,77 @@
+.about-section {
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+  padding: 100px 6vw;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 40px;
+}
+
+/* =========================================
+   EDITOR
+   ========================================= */
+
+.about-editor {
+  min-width: 0;
+}
+
+/* =========================================
+   ABOUT TERMINAL
+   ========================================= */
+
+.about-terminal {
+  min-width: 0;
+}
+
+/* =========================================
+   STATS
+   ========================================= */
+
+.stats-grid {
+  grid-column: 1 / -1;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 20px;
+
+  margin-top: 20px;
+}
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+  .about-section {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  .about-section {
+    padding: 70px 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

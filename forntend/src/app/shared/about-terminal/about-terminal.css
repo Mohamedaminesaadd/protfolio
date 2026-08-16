@@ -1,0 +1,821 @@
+:host {
+  display: block;
+
+  width: 100%;
+
+  --neon-green: #00ff41;
+  --neon-blue: #00d4ff;
+
+  --border-color: #30363d;
+
+  --bg-primary: #0d1117;
+  --bg-secondary: #0d1117;
+  --bg-tertiary: #161b22;
+
+  --text-primary: #f0f6fc;
+  --text-secondary: #c9d1d9;
+  --text-dim: #8b949e;
+
+  --shadow-card:
+    0 18px 45px rgba(0, 0, 0, 0.42);
+}
+
+
+/* =========================================================
+   ABOUT / CERTIFICATIONS TERMINAL
+========================================================= */
+
+.about-terminal {
+
+  position: relative;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid var(--border-color);
+
+  border-radius: 10px;
+
+  background:
+    var(--bg-secondary);
+
+  box-shadow:
+    var(--shadow-card);
+
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   TOP ACCENT
+========================================================= */
+
+.about-terminal::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+
+  left: 15%;
+  right: 15%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 65, 0.5),
+      rgba(0, 212, 255, 0.35),
+      transparent
+    );
+
+  pointer-events: none;
+
+  z-index: 5;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.about-terminal:hover {
+
+  transform:
+    translateY(-2px);
+
+  border-color:
+    #444c56;
+
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.48),
+    0 0 25px rgba(0, 255, 65, 0.035);
+}
+
+
+/* =========================================================
+   TERMINAL HEADER
+========================================================= */
+
+.terminal-mini-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  min-height: 42px;
+
+  padding:
+    0 16px;
+
+  box-sizing: border-box;
+
+  background:
+    var(--bg-tertiary);
+
+  border-bottom:
+    1px solid var(--border-color);
+
+  color:
+    var(--text-dim);
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.68rem;
+}
+
+
+/* =========================================================
+   TERMINAL PATH
+========================================================= */
+
+.terminal-path {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+
+.terminal-prompt {
+
+  color:
+    var(--neon-green);
+
+  font-weight:
+    700;
+
+  text-shadow:
+    0 0 7px rgba(0, 255, 65, 0.3);
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.terminal-status {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color:
+    var(--neon-green);
+
+  font-size:
+    0.62rem;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.05em;
+}
+
+
+.status-dot {
+
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    var(--neon-green);
+
+  box-shadow:
+    0 0 8px rgba(0, 255, 65, 0.7);
+
+  animation:
+    statusPulse 2s ease-in-out infinite;
+}
+
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+}
+
+
+/* =========================================================
+   TERMINAL BODY
+========================================================= */
+
+.about-terminal-body {
+
+  position: relative;
+
+  padding:
+    26px;
+
+  box-sizing: border-box;
+
+  background:
+    var(--bg-primary);
+
+  color:
+    var(--text-secondary);
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+}
+
+
+/* =========================================================
+   SUBTLE GRID
+========================================================= */
+
+.about-terminal-body::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    100% 24px;
+
+  opacity:
+    0.4;
+}
+
+
+/* =========================================================
+   CERTIFICATION
+========================================================= */
+
+.certificate {
+
+  position: relative;
+
+  z-index: 1;
+
+  padding:
+    18px 0;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.certificate:first-child {
+  padding-top: 0;
+}
+
+
+.certificate:last-of-type {
+  border-bottom: none;
+}
+
+
+/* =========================================================
+   CERTIFICATE HEADER
+========================================================= */
+
+.certificate-header {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   CERTIFICATE ICON
+========================================================= */
+
+.certificate-icon {
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+    1px solid rgba(0, 212, 255, 0.2);
+
+  border-radius: 8px;
+
+  background:
+    rgba(0, 212, 255, 0.035);
+
+  color:
+    var(--neon-blue);
+
+  font-size:
+    20px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.certificate:hover .certificate-icon {
+
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(0, 212, 255, 0.4);
+
+  background:
+    rgba(0, 212, 255, 0.06);
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.certificate-meta {
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.certificate-meta h3 {
+
+  margin:
+    0 0 4px;
+
+  color:
+    var(--text-primary);
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.78rem;
+
+  font-weight:
+    600;
+
+  line-height:
+    1.45;
+}
+
+
+.certificate-meta span {
+
+  color:
+    var(--text-dim);
+
+  font-size:
+    0.61rem;
+}
+
+
+/* =========================================================
+   VERIFIED ICON
+========================================================= */
+
+.certificate-status {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid rgba(0, 255, 65, 0.2);
+
+  border-radius: 50%;
+
+  background:
+    rgba(0, 255, 65, 0.04);
+
+  color:
+    var(--neon-green);
+
+  font-size:
+    0.65rem;
+
+  box-shadow:
+    0 0 10px rgba(0, 255, 65, 0.04);
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.certificate-description {
+
+  position: relative;
+
+  z-index: 1;
+
+  margin:
+    12px 0 12px 51px;
+
+  max-width:
+    850px;
+
+  color:
+    #aeb7c2;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size:
+    0.68rem;
+
+  line-height:
+    1.75;
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.certificate-skills {
+
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-left:
+    51px;
+}
+
+
+.certificate-skills span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding:
+    4px 8px;
+
+  border:
+    1px solid rgba(0, 212, 255, 0.13);
+
+  border-radius:
+    4px;
+
+  background:
+    rgba(0, 212, 255, 0.025);
+
+  color:
+    #79c0ff;
+
+  font-size:
+    0.56rem;
+
+  white-space:
+    nowrap;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.certificate-skills span:hover {
+
+  border-color:
+    rgba(0, 212, 255, 0.35);
+
+  background:
+    rgba(0, 212, 255, 0.05);
+}
+
+
+/* =========================================================
+   TERMINAL FOOTER COMMAND
+========================================================= */
+
+.certificate-command {
+
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top:
+    20px;
+
+  padding-top:
+    16px;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.06);
+
+  color:
+    var(--text-dim);
+
+  font-size:
+    0.65rem;
+}
+
+
+.cursor {
+
+  color:
+    var(--neon-green);
+
+  animation:
+    cursorBlink 0.9s ease-in-out infinite;
+}
+
+
+@keyframes cursorBlink {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .about-terminal-body {
+
+    padding:
+      22px 20px;
+  }
+
+
+  .certificate {
+
+    padding:
+      16px 0;
+  }
+
+
+  .certificate-meta h3 {
+
+    font-size:
+      0.72rem;
+  }
+
+
+  .certificate-description {
+
+    margin-left:
+      51px;
+
+    font-size:
+      0.64rem;
+  }
+
+
+  .certificate-skills {
+
+    margin-left:
+      51px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .terminal-mini-header {
+
+    min-height:
+      40px;
+
+    padding:
+      0 13px;
+
+    font-size:
+      0.62rem;
+  }
+
+
+  .terminal-status {
+
+    font-size:
+      0.56rem;
+  }
+
+
+  .about-terminal-body {
+
+    padding:
+      20px 16px;
+  }
+
+
+  .certificate-header {
+
+    gap:
+      10px;
+  }
+
+
+  .certificate-icon {
+
+    width:
+      34px;
+
+    height:
+      34px;
+
+    font-size:
+      18px;
+  }
+
+
+  .certificate-meta h3 {
+
+    font-size:
+      0.66rem;
+
+    line-height:
+      1.4;
+  }
+
+
+  .certificate-meta span {
+
+    font-size:
+      0.55rem;
+  }
+
+
+  .certificate-status {
+
+    width:
+      19px;
+
+    height:
+      19px;
+
+    font-size:
+      0.56rem;
+  }
+
+
+  .certificate-description {
+
+    margin:
+      10px 0 10px 44px;
+
+    font-size:
+      0.59rem;
+
+    line-height:
+      1.7;
+  }
+
+
+  .certificate-skills {
+
+    margin-left:
+      44px;
+
+    gap:
+      5px;
+  }
+
+
+  .certificate-skills span {
+
+    padding:
+      3px 6px;
+
+    font-size:
+      0.5rem;
+  }
+
+
+  .certificate-command {
+
+    margin-top:
+      15px;
+
+    padding-top:
+      13px;
+
+    font-size:
+      0.57rem;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .about-terminal,
+  .certificate-icon {
+
+    transition:
+      none !important;
+  }
+
+
+  .status-dot,
+  .cursor {
+
+    animation:
+      none !important;
+
+    opacity:
+      1;
+  }
+
+}

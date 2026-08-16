@@ -1,0 +1,31 @@
+<article class="project-card">
+  <div class="project-header">
+    <div class="project-dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="project-file">
+      <iconify-icon [attr.icon]="fileIcon"></iconify-icon>
+      {{ fileName }}
+    </span>
+  </div>
+
+  <div class="project-body">
+    <pre><code><ng-content></ng-content></code></pre>
+  </div>
+
+  <div class="project-footer">
+    <div class="project-tags">
+      <span class="tag-item" *ngFor="let tag of tags">{{ tag }}</span>
+    </div>
+    <div class="project-links">
+      <a *ngIf="liveUrl" [href]="liveUrl" class="project-link" target="_blank" rel="noopener noreferrer">
+        <iconify-icon icon="solar:play-circle-bold"></iconify-icon> Live
+      </a>
+      <a *ngIf="codeUrl" [href]="codeUrl" class="project-link" target="_blank" rel="noopener noreferrer">
+        <iconify-icon icon="solar:code-square-bold"></iconify-icon> Code
+      </a>
+    </div>
+  </div>
+</article>

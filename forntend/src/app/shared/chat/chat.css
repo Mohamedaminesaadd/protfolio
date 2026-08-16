@@ -1,0 +1,1630 @@
+/* =========================================================
+   AI CHAT — PREMIUM BLACK / LUXURY TERMINAL
+   RESPONSIVE + SCROLLABLE
+========================================================= */
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  background: #0a0d10;
+}
+
+
+/* =========================================================
+   CHAT PAGE
+========================================================= */
+
+.chat-page {
+  width: 100%;
+  height: 95dvh;
+
+  min-height: 0;
+
+  padding: 16px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  overflow: hidden;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   AMBIENT BACKGROUND GLOW
+========================================================= */
+
+.chat-page::before,
+.chat-page::after {
+  content: "";
+
+  position: fixed;
+
+  width: 360px;
+  height: 360px;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  filter: blur(110px);
+
+  z-index: -1;
+}
+
+
+.chat-page::before {
+  top: 8%;
+  left: 12%;
+
+  background:
+    rgba(0, 255, 120, 0.07);
+}
+
+
+.chat-page::after {
+  right: 10%;
+  bottom: 5%;
+
+  background:
+    rgba(80, 150, 255, 0.055);
+}
+
+
+/* =========================================================
+   MAIN CHAT CONTAINER
+========================================================= */
+
+.chat-container {
+  width: min(100%, 820px);
+
+  height:
+    min(
+      620px,
+      calc(100dvh - 32px)
+    );
+
+  max-height: 620px;
+
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 21, 25, 0.98),
+      rgba(5, 8, 11, 0.99)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.13);
+
+  border-radius: 17px;
+
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 12px 30px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(0, 255, 100, 0.025),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+
+/* =========================================================
+   PREMIUM TOP LINE
+========================================================= */
+
+.chat-container::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 8%;
+  right: 8%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+
+  opacity: 0.8;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.chat-header {
+  flex: 0 0 auto;
+
+  min-height: 60px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 14px 18px;
+
+  box-sizing: border-box;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.06);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0)
+    );
+
+  position: relative;
+}
+
+
+.chat-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 18px;
+  right: 18px;
+
+  bottom: -1px;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.16),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   HEADER TITLE
+========================================================= */
+
+.chat-header h1 {
+  margin: 3px 0;
+
+  color: #ffffff;
+
+  font-size: 1.25rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.07em;
+
+  text-shadow:
+    0 0 25px rgba(255, 255, 255, 0.08);
+}
+
+
+.chat-header p {
+  margin: 0;
+
+  color:
+    rgba(255, 255, 255, 0.48);
+
+  font-size: 0.64rem;
+}
+
+
+/* =========================================================
+   ONLINE STATUS
+========================================================= */
+
+.chat-eyebrow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 3px;
+
+  color:
+    rgba(255, 255, 255, 0.85) !important;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.16em;
+
+  font-size: 0.55rem !important;
+
+  font-weight: 600;
+}
+
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 14px rgba(255, 255, 255, 0.45);
+
+  animation:
+    status-pulse 2s ease-in-out infinite;
+}
+
+
+@keyframes status-pulse {
+
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+}
+
+
+/* =========================================================
+   NEW CHAT BUTTON
+========================================================= */
+
+.new-chat-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 7px 10px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    rgba(255, 255, 255, 0.65);
+
+  font: inherit;
+
+  font-size: 0.6rem;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+.new-chat-button::before {
+  content: "+";
+
+  color: #ffffff;
+
+  font-size: 0.8rem;
+}
+
+
+.new-chat-button:hover:not(:disabled) {
+  color: #ffffff;
+
+  border-color:
+    rgba(255, 255, 255, 0.3);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 8px 25px rgba(255, 255, 255, 0.05);
+}
+
+
+/* =========================================================
+   CHAT MESSAGES AREA
+   IMPORTANT:
+   ONLY THIS AREA SCROLLS
+========================================================= */
+
+.chat-messages {
+  flex: 1 1 0;
+
+  min-height: 0;
+
+  width: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 18px 20px;
+
+  box-sizing: border-box;
+
+  scroll-behavior: smooth;
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    rgba(255, 255, 255, 0.18)
+    transparent;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================================
+   CHAT SCROLLBAR
+========================================================= */
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  border-radius: 999px;
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(255, 255, 255, 0.28);
+}
+
+
+/* =========================================================
+   MESSAGE CONTAINER
+========================================================= */
+
+.messages-container {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 13px;
+
+  width: 100%;
+
+  max-width: 720px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   MESSAGE TEXT
+========================================================= */
+
+app-message {
+  color: #ffffff !important;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    "Cascadia Code",
+    monospace;
+
+  font-size: 0.73rem;
+
+  line-height: 1.6;
+}
+
+
+app-message * {
+  color: #ffffff !important;
+}
+
+
+/* =========================================================
+   USER QUESTION
+========================================================= */
+
+app-message .user-message,
+app-message .user,
+app-message [class*="user"] {
+  color: #ffffff !important;
+
+  font-size: 0.73rem;
+
+  font-weight: 450;
+
+  line-height: 1.6;
+}
+
+
+app-message .user-message p,
+app-message .user-message span,
+app-message .user-message div,
+app-message .user p,
+app-message .user span,
+app-message .user div {
+  color: #ffffff !important;
+}
+
+
+/* =========================================================
+   AI RESPONSE
+========================================================= */
+
+app-message .ai-message,
+app-message .assistant-message,
+app-message .assistant,
+app-message [class*="assistant"],
+app-message [class*="ai"] {
+  color: #f7f7f7 !important;
+
+  font-size: 0.73rem;
+
+  font-weight: 400;
+
+  line-height: 1.65;
+}
+
+
+app-message .ai-message p,
+app-message .ai-message span,
+app-message .ai-message div,
+app-message .assistant-message p,
+app-message .assistant-message span,
+app-message .assistant-message div,
+app-message .assistant p,
+app-message .assistant span,
+app-message .assistant div {
+  color: #f7f7f7 !important;
+}
+
+
+/* =========================================================
+   AI HEADINGS
+========================================================= */
+
+app-message h1,
+app-message h2,
+app-message h3,
+app-message h4,
+app-message strong {
+  color: #ffffff !important;
+
+  font-weight: 600;
+
+  letter-spacing: 0.015em;
+}
+
+
+app-message h1 {
+  font-size: 0.95rem;
+
+  margin: 11px 0 6px;
+}
+
+
+app-message h2 {
+  font-size: 0.86rem;
+
+  margin: 10px 0 5px;
+}
+
+
+app-message h3 {
+  font-size: 0.8rem;
+
+  margin: 8px 0 4px;
+}
+
+
+/* =========================================================
+   AI PARAGRAPHS
+========================================================= */
+
+app-message p {
+  color: #f5f5f5 !important;
+
+  margin: 0 0 8px;
+}
+
+
+app-message p:last-child {
+  margin-bottom: 0;
+}
+
+
+/* =========================================================
+   AI LISTS
+========================================================= */
+
+app-message ul,
+app-message ol {
+  margin: 7px 0;
+
+  padding-left: 19px;
+}
+
+
+app-message li {
+  color: #f5f5f5 !important;
+
+  margin: 4px 0;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   INLINE CODE
+========================================================= */
+
+app-message code {
+  color: #ffffff !important;
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.09);
+
+  border-radius: 5px;
+
+  padding: 2px 5px;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    monospace;
+
+  font-size: 0.68rem;
+}
+
+
+/* =========================================================
+   CODE BLOCK
+========================================================= */
+
+app-message pre {
+  margin: 9px 0;
+
+  padding: 12px 13px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.65),
+      rgba(8, 10, 12, 0.8)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.09);
+
+  border-radius: 8px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+
+app-message pre code {
+  color: #ffffff !important;
+
+  background: transparent;
+
+  border: none;
+
+  padding: 0;
+
+  font-size: 0.66rem;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+app-message a {
+  color: #ffffff !important;
+
+  text-decoration: underline;
+
+  text-decoration-color:
+    rgba(255, 255, 255, 0.3);
+
+  text-underline-offset: 3px;
+
+  transition:
+    text-decoration-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+
+app-message a:hover {
+  opacity: 0.75;
+
+  text-decoration-color:
+    rgba(255, 255, 255, 0.8);
+}
+
+
+/* =========================================================
+   BLOCKQUOTE
+========================================================= */
+
+app-message blockquote {
+  margin: 9px 0;
+
+  padding: 8px 12px;
+
+  color:
+    rgba(255, 255, 255, 0.78) !important;
+
+  border-left:
+    2px solid rgba(255, 255, 255, 0.28);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border-radius:
+    0 6px 6px 0;
+}
+
+
+/* =========================================================
+   HORIZONTAL LINE
+========================================================= */
+
+app-message hr {
+  border: none;
+
+  height: 1px;
+
+  margin: 12px 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   TYPING INDICATOR
+========================================================= */
+
+.typing-indicator {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  width: fit-content;
+
+  padding: 9px 12px;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius:
+    5px 12px 12px 12px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+.typing-indicator span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.5);
+
+  animation:
+    typing-bounce 1.2s infinite;
+}
+
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+
+@keyframes typing-bounce {
+
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+
+    opacity: 0.35;
+  }
+
+  30% {
+    transform: translateY(-4px);
+
+    opacity: 1;
+  }
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-message {
+  margin: 0 0 8px;
+
+  padding: 9px 12px;
+
+  border:
+    1px solid rgba(255, 80, 80, 0.18);
+
+  border-radius: 8px;
+
+  color: #ffb0b0 !important;
+
+  background:
+    rgba(255, 70, 70, 0.045);
+
+  font-size: 0.66rem;
+}
+
+
+/* =========================================================
+   SUGGESTIONS
+========================================================= */
+
+.suggestions {
+  flex: 0 0 auto;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  max-width: 720px;
+
+  margin: 0 auto;
+
+  padding: 0 18px 11px;
+
+  box-sizing: border-box;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+}
+
+
+.suggestions::-webkit-scrollbar {
+  display: none;
+}
+
+
+.suggestions > span {
+  width: 100%;
+
+  margin-bottom: 1px;
+
+  color:
+    rgba(255, 255, 255, 0.4);
+
+  font-size: 0.55rem;
+
+  letter-spacing: 0.05em;
+}
+
+
+.suggestions > span::before {
+  content: "// ";
+
+  color:
+    rgba(255, 255, 255, 0.6);
+}
+
+
+.suggestions button {
+  padding: 5px 9px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 7px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    rgba(255, 255, 255, 0.65);
+
+  font: inherit;
+
+  font-size: 0.59rem;
+
+  cursor: pointer;
+
+  transition:
+    color 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+
+.suggestions button:hover {
+  color: #ffffff;
+
+  border-color:
+    rgba(255, 255, 255, 0.28);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   INPUT AREA
+========================================================= */
+
+.chat-input-area {
+  flex: 0 0 auto;
+
+  padding: 11px 18px 13px;
+
+  box-sizing: border-box;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.055);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 10, 0.65),
+      rgba(5, 8, 10, 0.95)
+    );
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-wrapper {
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 7px;
+
+  max-width: 720px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+.chat-input {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 44px;
+
+  max-height: 110px;
+
+  padding: 11px 13px;
+
+  resize: none;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.015)
+    );
+
+  color: #ffffff !important;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    "Cascadia Code",
+    monospace;
+
+  font-size: 0.71rem;
+
+  line-height: 1.5;
+
+  outline: none;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+.chat-input::placeholder {
+  color:
+    rgba(255, 255, 255, 0.32);
+}
+
+
+.chat-input:hover {
+  border-color:
+    rgba(255, 255, 255, 0.16);
+}
+
+
+.chat-input:focus {
+  border-color:
+    rgba(255, 255, 255, 0.35);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.02)
+    );
+
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.035),
+    0 0 30px rgba(255, 255, 255, 0.025);
+}
+
+
+/* =========================================================
+   INPUT SCROLLBAR
+========================================================= */
+
+.chat-input::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+.chat-input::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.chat-input::-webkit-scrollbar-thumb {
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  border-radius: 999px;
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+.send-button {
+  display: grid;
+
+  place-items: center;
+
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.28);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  color: #ffffff;
+
+  font: inherit;
+
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+.send-button:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(255, 255, 255, 0.55);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.17),
+      rgba(255, 255, 255, 0.05)
+    );
+
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(255, 255, 255, 0.07);
+}
+
+
+.send-button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   FOOTER TEXT
+========================================================= */
+
+.chat-input-area small {
+  display: block;
+
+  max-width: 720px;
+
+  margin: 6px auto 0;
+
+  color:
+    rgba(255, 255, 255, 0.3);
+
+  font-size: 0.53rem;
+
+  letter-spacing: 0.02em;
+}
+
+
+.chat-input-area small::before {
+  content: "● ";
+
+  color:
+    rgba(255, 255, 255, 0.45);
+}
+
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.send-button:disabled,
+.new-chat-button:disabled {
+  opacity: 0.3;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .chat-page {
+    padding: 12px;
+  }
+
+
+  .chat-container {
+    width: min(100%, 760px);
+
+    height:
+      min(
+        610px,
+        calc(100dvh - 24px)
+      );
+
+    max-height: 610px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .chat-page {
+    width: 100%;
+
+    height: 100dvh;
+
+    min-height: 0;
+
+    padding: 6px;
+
+    overflow: hidden;
+  }
+
+
+  .chat-container {
+    width: 100%;
+
+    height: calc(100dvh - 12px);
+
+    max-height: none;
+
+    min-height: 0;
+
+    border-radius: 13px;
+  }
+
+
+  .chat-header {
+    min-height: 58px;
+
+    padding: 12px 13px;
+  }
+
+
+  .chat-header h1 {
+    font-size: 1.05rem;
+  }
+
+
+  .chat-header p {
+    font-size: 0.58rem;
+  }
+
+
+  .chat-messages {
+    flex: 1 1 0;
+
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 14px 11px;
+
+    -webkit-overflow-scrolling: touch;
+
+    overscroll-behavior: contain;
+  }
+
+
+  .chat-messages::-webkit-scrollbar {
+    width: 4px;
+  }
+
+
+  .messages-container {
+    gap: 11px;
+
+    max-width: 100%;
+  }
+
+
+  app-message {
+    font-size: 0.69rem;
+
+    line-height: 1.55;
+  }
+
+
+  app-message h1 {
+    font-size: 0.9rem;
+  }
+
+
+  app-message h2 {
+    font-size: 0.82rem;
+  }
+
+
+  app-message h3 {
+    font-size: 0.76rem;
+  }
+
+
+  app-message pre {
+    max-width: 100%;
+
+    overflow-x: auto;
+  }
+
+
+  .suggestions {
+    flex: 0 0 auto;
+
+    max-height: 65px;
+
+    flex-wrap: nowrap;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding:
+      0 11px 9px;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  .suggestions > span {
+    flex: 0 0 auto;
+
+    width: auto;
+
+    align-self: center;
+  }
+
+
+  .suggestions button {
+    flex: 0 0 auto;
+
+    padding: 5px 8px;
+
+    font-size: 0.58rem;
+  }
+
+
+  .chat-input-area {
+    padding:
+      9px 11px 11px;
+  }
+
+
+  .input-wrapper {
+    gap: 6px;
+  }
+
+
+  .chat-input {
+    min-height: 43px;
+
+    max-height: 95px;
+
+    padding:
+      10px 11px;
+
+    font-size: 0.69rem;
+  }
+
+
+  .send-button {
+    width: 43px;
+
+    height: 43px;
+
+    flex-basis: 43px;
+  }
+
+
+  .chat-input-area small {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 430px) {
+
+  .chat-page {
+    padding: 3px;
+  }
+
+
+  .chat-container {
+    height: calc(100dvh - 25px);
+
+    border-radius: 10px;
+  }
+
+
+  .chat-header {
+    min-height: 54px;
+
+    padding: 10px 11px;
+  }
+
+
+  .chat-header h1 {
+    font-size: 0.95rem;
+  }
+
+
+  .chat-header p {
+    display: none;
+  }
+
+
+  .new-chat-button {
+    padding: 6px 8px;
+
+    font-size: 0.56rem;
+  }
+
+
+  .chat-messages {
+    padding:
+      11px 8px;
+  }
+
+
+  app-message {
+    font-size: 0.67rem;
+  }
+
+
+  app-message p {
+    margin-bottom: 7px;
+  }
+
+
+  app-message pre {
+    padding: 10px;
+
+    border-radius: 7px;
+  }
+
+
+  app-message pre code {
+    font-size: 0.61rem;
+  }
+
+
+  .suggestions {
+    max-height: 60px;
+
+    padding-inline: 8px;
+  }
+
+
+  .suggestions button {
+    padding: 4px 7px;
+
+    font-size: 0.55rem;
+  }
+
+
+  .chat-input-area {
+    padding-inline: 8px;
+  }
+
+
+  .chat-input {
+    min-height: 41px;
+
+    max-height: 85px;
+
+    padding: 9px;
+
+    font-size: 0.67rem;
+  }
+
+
+  .send-button {
+    width: 41px;
+
+    height: 41px;
+
+    flex-basis: 41px;
+
+    border-radius: 8px;
+  }
+
+}
+
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media (max-height: 520px) and (max-width: 900px) {
+
+  .chat-page {
+    padding: 4px;
+  }
+
+
+  .chat-container {
+    height: calc(100dvh - 8px);
+
+    max-height: none;
+
+    border-radius: 10px;
+  }
+
+
+  .chat-header {
+    min-height: 48px;
+
+    padding: 8px 11px;
+  }
+
+
+  .chat-header h1 {
+    font-size: 0.9rem;
+  }
+
+
+  .chat-messages {
+    padding:
+      10px 11px;
+  }
+
+
+  .suggestions {
+    max-height: 50px;
+
+    padding-bottom: 6px;
+  }
+
+
+  .chat-input-area {
+    padding:
+      7px 10px 8px;
+  }
+
+
+  .chat-input {
+    min-height: 39px;
+
+    max-height: 75px;
+  }
+
+
+  .send-button {
+    width: 39px;
+    height: 39px;
+
+    flex-basis: 39px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    scroll-behavior:
+      auto !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+
+}

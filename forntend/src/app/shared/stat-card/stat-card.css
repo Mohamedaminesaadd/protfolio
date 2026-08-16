@@ -1,0 +1,165 @@
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+.stat-card {
+  position: relative;
+
+  padding: 20px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(22, 27, 34, 0.98),
+      rgba(25, 32, 42, 0.96)
+    );
+
+  border: 1px solid rgba(139, 148, 158, 0.22);
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   TOP ACCENT
+========================================================= */
+
+.stat-card::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 15%;
+  right: 15%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 212, 255, 0.55),
+      rgba(0, 255, 65, 0.65),
+      transparent
+    );
+
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   SUBTLE GREEN GLOW
+========================================================= */
+
+.stat-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 100px;
+  height: 100px;
+
+  top: -50px;
+  right: -50px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(0, 255, 65, 0.07);
+
+  filter: blur(25px);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.stat-card:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    rgba(0, 212, 255, 0.45);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.35),
+    0 0 22px rgba(0, 212, 255, 0.08);
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+.stat-number {
+  position: relative;
+
+  z-index: 1;
+
+  margin-bottom: 6px;
+
+  color: #00ff41;
+
+  font-size: 1.6rem;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  text-shadow:
+    0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.stat-label {
+  position: relative;
+
+  z-index: 1;
+
+  color: #8b949e;
+
+  font-size: 0.65rem;
+
+  font-weight: 500;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .stat-card {
+    padding: 17px 12px;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+  }
+
+}

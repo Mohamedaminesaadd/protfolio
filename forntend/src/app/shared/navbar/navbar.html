@@ -1,0 +1,13 @@
+<nav class="navbar" aria-label="Primary navigation">
+  <a class="nav-logo" href="#home" (click)="navigateTo('home', '/'); $event.preventDefault()" aria-label="Go to home">
+    <span class="logo-bracket">&lt;</span><span class="logo-name">MA</span><span class="logo-bracket">/&gt;</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#home" (click)="navigateTo('home', '/'); $event.preventDefault()" [class.active]="router.url === '/'" aria-label="Home"><span class="nav-number">01</span><span class="nav-icon">⌂</span><span class="nav-label">Home</span></a>
+    <a class="nav-link" href="#about" (click)="navigateTo('about', '/about'); $event.preventDefault()" [class.active]="router.url.startsWith('/about')" aria-label="About"><span class="nav-number">02</span><span class="nav-icon">◉</span><span class="nav-label">About</span></a>
+    <a class="nav-link" href="#projects" (click)="navigateTo('projects', '/projects'); $event.preventDefault()" [class.active]="router.url.startsWith('/projects')" aria-label="Projects"><span class="nav-number">03</span><span class="nav-icon">▣</span><span class="nav-label">Projects</span></a>
+    <a class="nav-link" href="#skills" (click)="navigateTo('skills', '/skills'); $event.preventDefault()" [class.active]="router.url.startsWith('/skills')" aria-label="Skills"><span class="nav-number">04</span><span class="nav-icon">&lt;/&gt;</span><span class="nav-label">Skills</span></a>
+    <a class="nav-link" href="/chat" (click)="navigateTo('chat', '/chat'); $event.preventDefault()" [class.active]="router.url.startsWith('/chat')" aria-label="AI chat"><span class="nav-number">05</span><span class="nav-icon">◌</span><span class="nav-label">AI Chat</span></a>
+  </div>
+  <div class="nav-status" aria-label="Available"><span class="status-dot"></span><span>ONLINE</span></div>
+</nav>

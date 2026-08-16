@@ -1,0 +1,748 @@
+/* =========================================================
+   HERO VISUAL STACK
+   ========================================================= */
+
+.hero-visual-stack {
+  position: relative;
+
+  flex: 1 1 0;
+
+  width: 100%;
+  min-width: 0;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  opacity: 1;
+  
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HERO VISUAL CARD
+   Same dimensions behavior as terminal
+   ========================================================= */
+
+.hero-visual-card {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 0;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #30363d;
+
+  border-radius: 8px;
+    text-decoration: none;
+  color: inherit;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 25%,
+      rgba(0, 212, 255, 0.045),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 75% 80%,
+      rgba(0, 255, 65, 0.025),
+      transparent 55%
+    ),
+    #0d1117;
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.01);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  isolation: isolate;
+}
+
+
+.hero-visual-card:hover {
+  border-color: #444c56;
+
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(0, 212, 255, 0.025);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SUBTLE GRID
+   ========================================================= */
+
+.hero-visual-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.008) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    100% 24px,
+    24px 100%;
+
+  opacity: 0.35;
+}
+
+
+/* =========================================================
+   DARK OVERLAY
+   ========================================================= */
+
+.hero-visual-card::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.08),
+      transparent 30%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.35)
+    );
+}
+
+
+/* =========================================================
+   CODE BACKGROUND
+   ========================================================= */
+
+.code-rain {
+  position: absolute;
+
+  inset: -15% -10%;
+
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+
+  transform: rotate(-8deg);
+
+  opacity: 0.22;
+
+  pointer-events: none;
+
+  filter:
+    brightness(0.55)
+    contrast(1.2)
+    blur(0.4px);
+}
+
+
+.code-rain span {
+  width: max-content;
+
+  padding: 6px 12px;
+
+  color: rgba(126, 231, 135, 0.35);
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size: clamp(0.62rem, 0.85vw, 0.76rem);
+
+  font-weight: 600;
+
+  letter-spacing: 0.04em;
+
+  border: 1px solid rgba(0, 255, 65, 0.04);
+
+  border-radius: 999px;
+
+  background: rgba(0, 255, 65, 0.015);
+
+  animation: codeFloat 12s ease-in-out infinite;
+}
+
+
+.code-rain span:nth-child(2n) {
+  align-self: flex-end;
+
+  color: rgba(0, 212, 255, 0.35);
+
+  border-color: rgba(0, 212, 255, 0.04);
+
+  background: rgba(0, 212, 255, 0.015);
+
+  animation-duration: 14s;
+}
+
+
+.code-rain span:nth-child(3n) {
+  margin-left: 18%;
+
+  color: rgba(210, 168, 255, 0.3);
+
+  border-color: rgba(189, 0, 255, 0.04);
+
+  background: rgba(189, 0, 255, 0.015);
+
+  animation-duration: 16s;
+}
+
+
+@keyframes codeFloat {
+  0%,
+  100% {
+    transform: translateX(-15px);
+  }
+
+  50% {
+    transform: translateX(15px);
+  }
+}
+
+
+/* =========================================================
+   VISUAL CONTENT
+   ========================================================= */
+
+.hero-visual-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: min(100%, 440px);
+
+  padding: 30px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  text-align: center;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.22),
+      transparent 70%
+    );
+
+  border-radius: 20px;
+
+  backdrop-filter: blur(3px);
+
+  -webkit-backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   AI ICON
+   ========================================================= */
+
+.visual-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 76px;
+  height: 76px;
+
+  margin-bottom: 20px;
+
+  border: 1px solid rgba(0, 212, 255, 0.18);
+
+  border-radius: 18px;
+
+  background:
+    rgba(13, 17, 23, 0.85);
+
+  color: #00d4ff;
+
+  font-size: 1.7rem;
+
+  box-shadow:
+    0 0 35px rgba(0, 212, 255, 0.06),
+    inset 0 0 20px rgba(0, 212, 255, 0.025);
+
+  text-shadow:
+    0 0 18px rgba(0, 212, 255, 0.3);
+
+  backdrop-filter: blur(10px);
+
+  -webkit-backdrop-filter: blur(10px);
+
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+
+.hero-visual-card:hover .visual-icon {
+  border-color: rgba(0, 212, 255, 0.35);
+
+  box-shadow:
+    0 0 45px rgba(0, 212, 255, 0.08);
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   VISUAL TITLE
+   ========================================================= */
+
+.visual-title {
+  margin: 0;
+
+  color: #f0f6fc;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+
+  line-height: 1.4;
+
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+}
+
+
+/* =========================================================
+   VISUAL SUBTITLE
+   ========================================================= */
+
+.visual-subtitle {
+  max-width: 390px;
+
+  margin: 12px auto 0;
+
+  color: #8b949e;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size: 0.72rem;
+
+  line-height: 1.8;
+
+  letter-spacing: 0.01em;
+}
+
+
+/* =========================================================
+   ASK AI PROMPT
+   ========================================================= */
+
+.ai-question-box {
+  width: 100%;
+
+  margin-top: 25px;
+
+  padding: 14px 16px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  text-align: left;
+
+  border: 1px solid #30363d;
+
+  border-radius: 7px;
+
+  background: #161b22;
+
+  color: #8b949e;
+
+  font-family:
+    "Fira Code",
+    "JetBrains Mono",
+    Consolas,
+    monospace;
+
+  font-size: 0.68rem;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+
+.ai-question-box:hover {
+  border-color: #444c56;
+
+  background: #1a2028;
+}
+
+
+.ai-question-icon {
+  flex-shrink: 0;
+
+  color: #3fb950;
+
+  font-size: 0.85rem;
+}
+
+
+.ai-question-text {
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   SUGGESTED QUESTIONS
+   ========================================================= */
+
+.ai-suggestions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 14px;
+}
+
+
+.ai-suggestion {
+  padding: 5px 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 5px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  color: #6e7681;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.58rem;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.ai-suggestion:hover {
+  color: #c9d1d9;
+
+  border-color: rgba(0, 212, 255, 0.18);
+
+  background: rgba(0, 212, 255, 0.035);
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.hero-ai-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 22px;
+
+  color: #6e7681;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.58rem;
+
+  letter-spacing: 0.04em;
+}
+
+
+.hero-ai-status .status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #3fb950;
+
+  box-shadow:
+    0 0 7px rgba(63, 185, 80, 0.55);
+
+  animation: aiStatusPulse 2s ease-in-out infinite;
+}
+
+
+@keyframes aiStatusPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
+.hero-visual-badge {
+  position: absolute;
+
+  left: 20px;
+  right: 20px;
+
+  bottom: 20px;
+
+  z-index: 3;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 9px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  border-radius: 8px;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  color: #6e7681;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 0.58rem;
+
+  letter-spacing: 0.04em;
+
+  backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+.badge-icon {
+  color: rgba(0, 255, 65, 0.5);
+
+  font-size: 0.75rem;
+}
+
+
+/* =========================================================
+   DESKTOP
+   IMPORTANT:
+   No aspect-ratio here.
+   The parent controls the height.
+   ========================================================= */
+
+@media (min-width: 901px) {
+
+  .hero-visual-stack {
+    height: 100%;
+  }
+
+  .hero-visual-card {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .hero-visual-stack {
+    width: 100%;
+
+    height: auto;
+
+    min-height: 0;
+  }
+
+  .hero-visual-card {
+    min-height: 420px;
+
+    height: auto;
+
+    aspect-ratio: auto;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .hero-visual-card {
+    min-height: 380px;
+
+    border-radius: 8px;
+  }
+
+  .hero-visual-content {
+    padding: 24px 20px;
+  }
+
+  .visual-icon {
+    width: 64px;
+    height: 64px;
+
+    margin-bottom: 16px;
+
+    font-size: 1.45rem;
+
+    border-radius: 15px;
+  }
+
+  .visual-subtitle {
+    font-size: 0.65rem;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .hero-visual-card {
+    min-height: 340px;
+  }
+
+  .hero-visual-content {
+    padding: 20px 15px;
+  }
+
+  .visual-title {
+    font-size: 0.95rem;
+  }
+
+  .visual-subtitle {
+    font-size: 0.6rem;
+
+    line-height: 1.7;
+  }
+
+  .ai-question-box {
+    padding: 11px 12px;
+
+    font-size: 0.6rem;
+  }
+
+  .ai-suggestion {
+    font-size: 0.52rem;
+  }
+
+  .hero-visual-badge {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    font-size: 0.52rem;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .hero-visual-card,
+  .visual-icon,
+  .code-rain span,
+  .hero-ai-status .status-dot {
+    animation: none !important;
+
+    transition: none !important;
+  }
+
+}
