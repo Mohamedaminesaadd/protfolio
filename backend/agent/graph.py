@@ -1,3 +1,4 @@
+import os
 
 from langgraph.graph import (
     StateGraph,
@@ -17,20 +18,26 @@ from backend.agent.nodes import (
 
 
 # ============================================================
-# DATABASE
+# DATABASE CONFIGURATION
 # ============================================================
 
-DATABASE_URL = (
-    "postgresql://agent:agent_password"
-    "@localhost:5433/agent_memory"
+SUPABASE_DB_URL = os.getenv(
+    "SUPABASE_DB_URL"
 )
+
+if not SUPABASE_DB_URL:
+    raise RuntimeError(
+        "SUPABASE_DB_URL environment variable is not configured."
+    )
 
 
 # ============================================================
 # ROUTER
 # ============================================================
 
-def should_continue(state: AgentState):
+def should_continue(
+    state: AgentState,
+):
     """
     Decide whether the graph should execute tools
     or finish.
@@ -99,13 +106,16 @@ builder.add_edge(
 )
 
 
+# ============================================================
+# CONDITIONAL ROUTING
+# ============================================================
+
 # LLM
 #   ↓
-# tool calls? ─── YES ──→ TOOLS
-#   │
-#   NO
-#   ↓
-# END
+# tool calls?
+#
+# YES → tools
+# NO  → END
 
 builder.add_conditional_edges(
     "llm",
@@ -117,9 +127,9 @@ builder.add_conditional_edges(
 )
 
 
-# TOOLS
-#   ↓
-# LLM
+# ============================================================
+# TOOL → LLM
+# ============================================================
 
 builder.add_edge(
     "tools",
@@ -128,11 +138,11 @@ builder.add_edge(
 
 
 # ============================================================
-# POSTGRES CONNECTION POOL
+# SUPABASE POSTGRES CONNECTION POOL
 # ============================================================
 
 connection_pool = ConnectionPool(
-    conninfo=DATABASE_URL,
+    conninfo=SUPABASE_DB_URL,
 
     max_size=10,
 
@@ -144,7 +154,7 @@ connection_pool = ConnectionPool(
 
 
 # ============================================================
-# CHECKPOINTER
+# LANGGRAPH CHECKPOINTER
 # ============================================================
 
 checkpointer = PostgresSaver(
@@ -153,7 +163,7 @@ checkpointer = PostgresSaver(
 
 
 # ============================================================
-# INITIALIZE CHECKPOINT DATABASE
+# INITIALIZE CHECKPOINT TABLES
 # ============================================================
 
 checkpointer.setup()
