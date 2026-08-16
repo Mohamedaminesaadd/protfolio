@@ -1,3 +1,4 @@
+
 from langgraph.graph import (
     StateGraph,
     START,
@@ -29,17 +30,32 @@ DATABASE_URL = (
 # ROUTER
 # ============================================================
 
-def should_continue(state):
+def should_continue(state: AgentState):
+    """
+    Decide whether the graph should execute tools
+    or finish.
+
+    If the last AI message contains tool calls:
+        → ToolNode
+
+    Otherwise:
+        → END
+    """
 
     messages = state["messages"]
 
+    if not messages:
+        return END
+
     last_message = messages[-1]
 
-    if getattr(
+    tool_calls = getattr(
         last_message,
         "tool_calls",
         None,
-    ):
+    )
+
+    if tool_calls:
         return "tools"
 
     return END
@@ -73,10 +89,23 @@ builder.add_node(
 # EDGES
 # ============================================================
 
+# START
+#   ↓
+# LLM
+
 builder.add_edge(
     START,
     "llm",
 )
+
+
+# LLM
+#   ↓
+# tool calls? ─── YES ──→ TOOLS
+#   │
+#   NO
+#   ↓
+# END
 
 builder.add_conditional_edges(
     "llm",
@@ -87,6 +116,11 @@ builder.add_conditional_edges(
     },
 )
 
+
+# TOOLS
+#   ↓
+# LLM
+
 builder.add_edge(
     "tools",
     "llm",
@@ -94,12 +128,14 @@ builder.add_edge(
 
 
 # ============================================================
-# POSTGRES CONNECTION
+# POSTGRES CONNECTION POOL
 # ============================================================
 
 connection_pool = ConnectionPool(
     conninfo=DATABASE_URL,
+
     max_size=10,
+
     kwargs={
         "autocommit": True,
         "prepare_threshold": 0,
@@ -117,7 +153,7 @@ checkpointer = PostgresSaver(
 
 
 # ============================================================
-# INITIALIZE DATABASE TABLES
+# INITIALIZE CHECKPOINT DATABASE
 # ============================================================
 
 checkpointer.setup()
@@ -128,5 +164,5 @@ checkpointer.setup()
 # ============================================================
 
 graph = builder.compile(
-    checkpointer=checkpointer
+    checkpointer=checkpointer,
 )

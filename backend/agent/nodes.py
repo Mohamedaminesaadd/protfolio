@@ -8,24 +8,32 @@ Architecture:
 
 User
  ↓
-LLM
+Gemini 2.5 Flash
  ↓
 Tool Call
  ↓
 ToolNode
  ↓
-LLM
+Gemini 2.5 Flash
  ↓
 Final Answer
 """
 
-from langchain_ollama import ChatOllama
+# ============================================================
+# IMPORTS
+# ============================================================
+
+import os
+
+from dotenv import load_dotenv
+
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import ToolNode
 
 from backend.agent.prompts import SYSTEM_PROMPT
 
 from backend.tools.rag_tool import search_profile
-from langchain_google_genai import ChatGoogleGenerativeAI
+
 from backend.tools.github_tool import (
     search_github_repositories,
     find_my_github_project,
@@ -36,22 +44,60 @@ from backend.tools.github_tool import (
 
 
 # ============================================================
+# ENVIRONMENT
+# ============================================================
+
+# Load variables from .env
+load_dotenv()
+
+
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
+LLM_MODEL = "Gemini 3 Flash"
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+
+# ============================================================
+# API KEY VALIDATION
+# ============================================================
+
+if not GOOGLE_API_KEY:
+
+    raise RuntimeError(
+        "GOOGLE_API_KEY is not set.\n"
+        "Please create a .env file in the project root:\n\n"
+        "GOOGLE_API_KEY=your_api_key"
+    )
+
+
+# ============================================================
 # LLM
 # ============================================================
 
-llm = ChatOllama(
-    model="qwen2.5:14b",
-    base_url="http://localhost:11434",
+llm = ChatGoogleGenerativeAI(
+    model="gemini-3-flash-preview",
+    google_api_key=GOOGLE_API_KEY,
     temperature=0.2,
 )
-
 
 # ============================================================
 # TOOLS
 # ============================================================
 
 tools = [
+
+    # --------------------------------------------------------
+    # Personal knowledge / RAG
+    # --------------------------------------------------------
+
     search_profile,
+
+    # --------------------------------------------------------
+    # GitHub
+    # --------------------------------------------------------
 
     search_github_repositories,
     find_my_github_project,
@@ -62,7 +108,7 @@ tools = [
 
 
 # ============================================================
-# NORMAL LLM
+# LLM WITH TOOLS
 # ============================================================
 
 llm_with_tools = llm.bind_tools(
@@ -72,15 +118,15 @@ llm_with_tools = llm.bind_tools(
 
 
 # ============================================================
-# PERSONAL PROFILE LLM
+# PROFILE LLM
 # ============================================================
 
 """
-For questions about Mohamed Amine Saad, we want to guarantee that
-the model retrieves information from the personal knowledge base.
+For personal questions, force the personal knowledge tool.
 
-This prevents Qwen from simply answering from its pretrained
-knowledge.
+This prevents the model from answering personal questions
+using pretrained knowledge without first consulting the
+knowledge base.
 """
 
 profile_llm = llm.bind_tools(
@@ -90,33 +136,71 @@ profile_llm = llm.bind_tools(
 
 
 # ============================================================
-# DETECT PERSONAL QUESTION
+# PERSONAL QUESTION DETECTION
 # ============================================================
 
 def is_personal_question(message: str) -> bool:
     """
-    Determine whether the user is asking about Mohamed Amine Saad.
+    Determine whether a question is likely about
+    Mohamed Amine Saad or his portfolio.
+
+    This is only a lightweight routing mechanism.
+    The final decision is still handled by the LLM.
     """
 
     text = message.lower().strip()
 
     personal_keywords = [
+
+        # ----------------------------------------------------
+        # Person
+        # ----------------------------------------------------
+
         "mohamed amine saad",
         "amine saad",
+        "mohamed amine",
+        "amine",
         "mohamed",
+
+        # ----------------------------------------------------
+        # Personal references
+        # ----------------------------------------------------
+
+        "my profile",
+        "my skills",
+        "my projects",
+        "my experience",
+        "my education",
+        "my technologies",
+        "my github",
+        "my portfolio",
+        "my background",
+
+        "his profile",
         "his skills",
-        "his skill",
+        "his projects",
         "his experience",
         "his education",
-        "his projects",
         "his technologies",
         "his github",
+        "his portfolio",
         "his background",
-        "his profile",
-        "tell me about amine",
-        "tell me about mohamed",
-        "about amine",
-        "about mohamed",
+
+        # ----------------------------------------------------
+        # Portfolio concepts
+        # ----------------------------------------------------
+
+        "my project",
+        "this project",
+        "that project",
+
+        # ----------------------------------------------------
+        # Known personal project concepts
+        # ----------------------------------------------------
+
+        "hpis",
+        "human performance intelligence system",
+        "coach ai",
     ]
 
     return any(
@@ -133,38 +217,57 @@ def llm_node(state):
     """
     Main LangGraph LLM node.
 
-    First request:
-        Personal question → force search_profile
+    Flow:
 
-    After tool result:
-        Use normal LLM to generate final answer.
+        User question
+             ↓
+        Detect personal question
+             ↓
+        ┌─────────────────────┐
+        │                     │
+        ▼                     ▼
+    Personal              General
+        │                     │
+        ▼                     ▼
+    search_profile       normal tools
+        │
+        ▼
+      ToolNode
+        │
+        ▼
+       LLM
+        │
+        ▼
+    Final answer
     """
 
     messages = state["messages"]
 
+    # ========================================================
+    # EMPTY STATE
+    # ========================================================
+
     if not messages:
+
         return {
             "messages": []
         }
 
-
-    # --------------------------------------------------------
-    # Check the last message
-    # --------------------------------------------------------
+    # ========================================================
+    # LAST MESSAGE
+    # ========================================================
 
     last_message = messages[-1]
-
-
-    # --------------------------------------------------------
-    # If we already received a tool result,
-    # allow the LLM to generate the final answer normally.
-    # --------------------------------------------------------
 
     message_type = getattr(
         last_message,
         "type",
         None,
     )
+
+    # ========================================================
+    # TOOL RESULT
+    # ========================================================
 
     if message_type == "tool":
 
@@ -190,10 +293,9 @@ def llm_node(state):
             "messages": [response]
         }
 
-
-    # --------------------------------------------------------
-    # Extract user message
-    # --------------------------------------------------------
+    # ========================================================
+    # EXTRACT USER MESSAGE
+    # ========================================================
 
     user_message = getattr(
         last_message,
@@ -209,7 +311,6 @@ def llm_node(state):
         user_message = str(
             user_message
         )
-
 
     # ========================================================
     # PERSONAL QUESTION
@@ -227,7 +328,6 @@ def llm_node(state):
             "[LLM] search_profile is REQUIRED."
         )
 
-
         response = profile_llm.invoke(
             [
                 {
@@ -241,7 +341,6 @@ def llm_node(state):
         return {
             "messages": [response]
         }
-
 
     # ========================================================
     # GENERAL QUESTION

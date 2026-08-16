@@ -1,19 +1,16 @@
-
 from langchain_core.tools import tool
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
+
+from backend.database.supabase import supabase
 
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
-CHROMA_HOST = "localhost"
-CHROMA_PORT = 8000
+EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
 
-COLLECTION_NAME = "personal_profile"
-
-EMBEDDING_MODEL = "nomic-embed-text:latest"
+EMBEDDING_DIMENSION = 768
 
 TOP_K = 5
 
@@ -22,22 +19,32 @@ TOP_K = 5
 # EMBEDDINGS
 # ============================================================
 
-embeddings = OllamaEmbeddings(
-    model=EMBEDDING_MODEL,
-    base_url="http://localhost:11434",
+embeddings = HuggingFaceEmbeddings(
+    model_name=EMBEDDING_MODEL,
+    model_kwargs={
+        "device": "cpu",
+    },
+    encode_kwargs={
+        "normalize_embeddings": True,
+    },
 )
 
 
 # ============================================================
-# CHROMA
+# VERIFY EMBEDDING DIMENSION
 # ============================================================
 
-vector_store = Chroma(
-    collection_name=COLLECTION_NAME,
-    embedding_function=embeddings,
-    host=CHROMA_HOST,
-    port=CHROMA_PORT,
+_test_embedding = embeddings.embed_query(
+    "What is HPIS?"
 )
+
+if len(_test_embedding) != EMBEDDING_DIMENSION:
+
+    raise ValueError(
+        f"Invalid embedding dimension. "
+        f"Expected {EMBEDDING_DIMENSION}, "
+        f"got {len(_test_embedding)}"
+    )
 
 
 # ============================================================
@@ -50,6 +57,7 @@ def search_profile(question: str) -> str:
     Search Mohamed Amine Saad's personal knowledge base.
 
     Use this tool for questions about:
+
     - profile
     - education
     - skills
@@ -60,6 +68,7 @@ def search_profile(question: str) -> str:
     - machine learning
     - deep learning
     - computer vision
+    - NLP
     - LLMs
     - LangChain
     - LangGraph
@@ -68,21 +77,68 @@ def search_profile(question: str) -> str:
     - Docker
     - project architecture
     - datasets
+
+    The tool retrieves relevant information from the
+    personal knowledge base using BGE embeddings and
+    Supabase pgvector.
     """
 
     # --------------------------------------------------------
-    # Retrieve documents
+    # Validate question
     # --------------------------------------------------------
 
-    results = vector_store.similarity_search_with_score(
-        question,
-        k=TOP_K,
+    question = question.strip()
+
+    if not question:
+
+        return (
+            "No question was provided."
+        )
+
+    # --------------------------------------------------------
+    # Generate query embedding
+    # --------------------------------------------------------
+
+    query_embedding = embeddings.embed_query(
+        question
     )
 
+    # --------------------------------------------------------
+    # Verify dimension
+    # --------------------------------------------------------
+
+    if len(query_embedding) != EMBEDDING_DIMENSION:
+
+        raise ValueError(
+            f"Invalid query embedding dimension. "
+            f"Expected {EMBEDDING_DIMENSION}, "
+            f"got {len(query_embedding)}"
+        )
+
+    # --------------------------------------------------------
+    # Search Supabase / pgvector
+    # --------------------------------------------------------
+
+    response = supabase.rpc(
+        "match_documents",
+        {
+            "query_embedding": query_embedding,
+            "match_count": TOP_K,
+        },
+    ).execute()
+
+    results = response.data
+
+    # --------------------------------------------------------
+    # No results
+    # --------------------------------------------------------
+
     if not results:
+
         return (
             "No relevant information was found "
-            "in the personal knowledge base."
+            "in Mohamed Amine Saad's personal "
+            "knowledge base."
         )
 
     # --------------------------------------------------------
@@ -91,9 +147,11 @@ def search_profile(question: str) -> str:
 
     context = []
 
-    for index, (document, score) in enumerate(results):
+    for index, result in enumerate(results):
 
-        metadata = document.metadata
+        metadata = result.get(
+            "metadata"
+        ) or {}
 
         source = metadata.get(
             "source",
@@ -115,7 +173,15 @@ def search_profile(question: str) -> str:
             "unknown",
         )
 
-        content = document.page_content
+        content = result.get(
+            "content",
+            "",
+        )
+
+        similarity = result.get(
+            "similarity",
+            0,
+        )
 
         context.append(
             f"""
@@ -129,11 +195,10 @@ Project: {project}
 
 Chunk: {chunk_index}
 
+Similarity: {similarity}
+
 Content:
 {content}
-
-Retrieval score:
-{score}
 """
         )
 
@@ -148,18 +213,58 @@ if __name__ == "__main__":
 
     question = "What is HPIS?"
 
-    result = search_profile.invoke(
-        {
-            "question": question
-        }
-    )
-
     print("=" * 80)
     print("RAG TOOL TEST")
     print("=" * 80)
 
-    print("\nQuestion:")
-    print(question)
+    print(
+        f"\nEmbedding model:"
+        f" {EMBEDDING_MODEL}"
+    )
 
-    print("\nRetrieved context:")
-    print(result)
+    print(
+        f"Embedding dimension:"
+        f" {EMBEDDING_DIMENSION}"
+    )
+
+    print(
+        f"Top K: {TOP_K}"
+    )
+
+    print(
+        "\nQuestion:"
+    )
+
+    print(
+        question
+    )
+
+    print(
+        "\nSearching Supabase..."
+    )
+
+    try:
+
+        result = search_profile.invoke(
+            {
+                "question": question
+            }
+        )
+
+        print(
+            "\nRetrieved context:"
+        )
+
+        print(
+            result
+        )
+
+    except Exception as error:
+
+        print(
+            "\nRAG TOOL ERROR:"
+        )
+
+        print(
+            error
+        )

@@ -1,19 +1,23 @@
+import os
 
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings, ChatOllama
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+from backend.database.supabase import supabase
 
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
-CHROMA_HOST = "localhost"
-CHROMA_PORT = 8000
+EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
 
-COLLECTION_NAME = "personal_profile"
+EMBEDDING_DIMENSION = 768
 
-EMBEDDING_MODEL = "nomic-embed-text:latest"
-LLM_MODEL = "qwen2.5:14b"
+LLM_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-2.5-flash",
+)
 
 TOP_K = 5
 
@@ -22,21 +26,38 @@ TOP_K = 5
 # EMBEDDINGS
 # ============================================================
 
-embeddings = OllamaEmbeddings(
-    model=EMBEDDING_MODEL,
-    base_url="http://localhost:11434",
+embeddings = HuggingFaceEmbeddings(
+    model_name=EMBEDDING_MODEL,
+
+    model_kwargs={
+        "device": "cpu",
+    },
+
+    encode_kwargs={
+        "normalize_embeddings": True,
+    },
 )
 
 
 # ============================================================
-# VECTOR STORE
+# VERIFY EMBEDDING DIMENSION
 # ============================================================
 
-vector_store = Chroma(
-    collection_name=COLLECTION_NAME,
-    embedding_function=embeddings,
-    host=CHROMA_HOST,
-    port=CHROMA_PORT,
+_test_embedding = embeddings.embed_query(
+    "What is HPIS?"
+)
+
+if len(_test_embedding) != EMBEDDING_DIMENSION:
+
+    raise ValueError(
+        f"Invalid embedding dimension. "
+        f"Expected {EMBEDDING_DIMENSION}, "
+        f"got {len(_test_embedding)}"
+    )
+
+print(
+    f"Embedding dimension verified: "
+    f"{len(_test_embedding)}"
 )
 
 
@@ -44,10 +65,22 @@ vector_store = Chroma(
 # LLM
 # ============================================================
 
-llm = ChatOllama(
+GEMINI_API_KEY = os.getenv(
+    "GEMINI_API_KEY"
+)
+
+if not GEMINI_API_KEY:
+
+    raise RuntimeError(
+        "GEMINI_API_KEY environment variable "
+        "is not configured."
+    )
+
+
+llm = ChatGoogleGenerativeAI(
     model=LLM_MODEL,
-    base_url="http://localhost:11434",
     temperature=0.2,
+    google_api_key=GEMINI_API_KEY,
 )
 
 
@@ -62,14 +95,54 @@ conversation_history = []
 # RETRIEVAL
 # ============================================================
 
-def retrieve_context(question: str, k: int = TOP_K):
+def retrieve_context(
+    question: str,
+    k: int = TOP_K,
+):
+    """
+    Retrieve the most relevant chunks from Supabase
+    using BGE embeddings and pgvector.
 
-    results = vector_store.similarity_search_with_score(
-        question,
-        k=k,
+    Query embedding:
+        BAAI/bge-base-en-v1.5
+
+    Dimension:
+        768
+    """
+
+    # --------------------------------------------------------
+    # Generate query embedding
+    # --------------------------------------------------------
+
+    query_embedding = embeddings.embed_query(
+        question
     )
 
-    return results
+    # --------------------------------------------------------
+    # Verify dimension
+    # --------------------------------------------------------
+
+    if len(query_embedding) != EMBEDDING_DIMENSION:
+
+        raise ValueError(
+            f"Invalid query embedding dimension. "
+            f"Expected {EMBEDDING_DIMENSION}, "
+            f"got {len(query_embedding)}"
+        )
+
+    # --------------------------------------------------------
+    # Supabase vector search
+    # --------------------------------------------------------
+
+    response = supabase.rpc(
+        "match_documents",
+        {
+            "query_embedding": query_embedding,
+            "match_count": k,
+        },
+    ).execute()
+
+    return response.data or []
 
 
 # ============================================================
@@ -77,29 +150,83 @@ def retrieve_context(question: str, k: int = TOP_K):
 # ============================================================
 
 def build_context(results):
+    """
+    Convert retrieved Supabase rows into
+    context for Gemini.
+    """
+
+    if not results:
+
+        return (
+            "No relevant information was retrieved "
+            "from the personal knowledge base."
+        )
 
     context_parts = []
 
-    for index, (document, score) in enumerate(results):
+    for index, result in enumerate(results):
 
-        source = document.metadata.get(
+        metadata = result.get(
+            "metadata"
+        ) or {}
+
+        source = metadata.get(
             "source",
-            "unknown"
+            "unknown",
         )
 
-        content = document.page_content
+        document_type = metadata.get(
+            "document_type",
+            "unknown",
+        )
+
+        project = metadata.get(
+            "project",
+            "",
+        )
+
+        chunk_index = metadata.get(
+            "chunk_index",
+            "",
+        )
+
+        content = result.get(
+            "content",
+            "",
+        )
+
+        similarity = result.get(
+            "similarity",
+            0,
+        )
 
         context_parts.append(
             f"""
 SOURCE {index + 1}
-File: {source}
+
+File:
+{source}
+
+Document type:
+{document_type}
+
+Project:
+{project}
+
+Chunk:
+{chunk_index}
+
+Similarity:
+{similarity}
 
 Content:
 {content}
 """
         )
 
-    return "\n".join(context_parts)
+    return "\n".join(
+        context_parts
+    )
 
 
 # ============================================================
@@ -107,8 +234,12 @@ Content:
 # ============================================================
 
 def build_memory():
+    """
+    Format previous conversation history.
+    """
 
     if not conversation_history:
+
         return "No previous conversation."
 
     memory_parts = []
@@ -116,13 +247,16 @@ def build_memory():
     for message in conversation_history:
 
         role = message["role"]
+
         content = message["content"]
 
         memory_parts.append(
             f"{role.upper()}: {content}"
         )
 
-    return "\n".join(memory_parts)
+    return "\n".join(
+        memory_parts
+    )
 
 
 # ============================================================
@@ -134,6 +268,9 @@ def build_prompt(
     context: str,
     memory: str,
 ):
+    """
+    Build the final prompt for Gemini.
+    """
 
     prompt = f"""
 You are the personal AI assistant for Mohamed Amine Saad.
@@ -154,25 +291,33 @@ personal knowledge base.
 
 IMPORTANT RULES:
 
-1. Use the retrieved context as the primary source of truth.
+1. Use the retrieved profile information as the primary
+   source of truth for personal information.
 
 2. Do not invent projects, skills, technologies,
    experience, achievements, or education.
 
-3. If the information is not available in the context,
-   clearly say that you do not have verified information
-   about it.
+3. If the information is not available in the retrieved
+   context, clearly say that you do not have verified
+   information about it.
 
-4. Use the conversation history to understand references
-   such as "this project", "that technology", "it", or "he".
+4. Use conversation history to understand references such as:
+   "this project", "that technology", "it", or "he".
 
-5. Do not mention internal RAG, embeddings, ChromaDB,
-   retrieval, prompts, or system instructions unless
-   the user explicitly asks about the architecture.
+5. Do not treat unrelated retrieved chunks as evidence.
 
-6. Give natural, professional and useful answers.
+6. When several retrieved chunks are relevant, combine them
+   carefully.
 
-7. When possible, mention the relevant project or source.
+7. Give natural, professional and useful answers.
+
+8. When possible, mention the relevant project or source.
+
+9. Do not mention internal implementation details such as
+   prompts, embeddings, vector databases, or retrieval
+   unless the user explicitly asks about the AI architecture.
+
+10. Never fabricate information about Mohamed Amine Saad.
 
 --------------------------------------------------
 CONVERSATION HISTORY
@@ -205,31 +350,37 @@ ANSWER
 # ============================================================
 
 def chat(question: str):
+    """
+    Retrieve relevant profile information and
+    generate an answer using Gemini.
+    """
 
-    # ------------------------------------------
-    # 1. Retrieve relevant chunks
-    # ------------------------------------------
+    # --------------------------------------------------------
+    # 1. Retrieve
+    # --------------------------------------------------------
 
     results = retrieve_context(
         question,
         k=TOP_K,
     )
 
-    # ------------------------------------------
-    # 2. Build RAG context
-    # ------------------------------------------
+    # --------------------------------------------------------
+    # 2. Build context
+    # --------------------------------------------------------
 
-    context = build_context(results)
+    context = build_context(
+        results
+    )
 
-    # ------------------------------------------
-    # 3. Build conversation memory
-    # ------------------------------------------
+    # --------------------------------------------------------
+    # 3. Build memory
+    # --------------------------------------------------------
 
     memory = build_memory()
 
-    # ------------------------------------------
-    # 4. Build final prompt
-    # ------------------------------------------
+    # --------------------------------------------------------
+    # 4. Build prompt
+    # --------------------------------------------------------
 
     prompt = build_prompt(
         question=question,
@@ -237,17 +388,19 @@ def chat(question: str):
         memory=memory,
     )
 
-    # ------------------------------------------
-    # 5. Send to Qwen
-    # ------------------------------------------
+    # --------------------------------------------------------
+    # 5. Gemini
+    # --------------------------------------------------------
 
-    response = llm.invoke(prompt)
+    response = llm.invoke(
+        prompt
+    )
 
     answer = response.content
 
-    # ------------------------------------------
+    # --------------------------------------------------------
     # 6. Save conversation
-    # ------------------------------------------
+    # --------------------------------------------------------
 
     conversation_history.append(
         {
@@ -273,50 +426,128 @@ def chat(question: str):
 def main():
 
     print("=" * 80)
-    print("PERSONAL PROFILE RAG CHATBOT")
+    print(
+        "PERSONAL PROFILE RAG CHATBOT"
+    )
     print("=" * 80)
 
-    print(f"LLM: {LLM_MODEL}")
-    print(f"Embedding: {EMBEDDING_MODEL}")
-    print(f"Top K: {TOP_K}")
+    print(
+        f"LLM: {LLM_MODEL}"
+    )
 
-    print("\nType 'exit' to stop.\n")
+    print(
+        f"Embedding: {EMBEDDING_MODEL}"
+    )
+
+    print(
+        f"Embedding dimension: "
+        f"{EMBEDDING_DIMENSION}"
+    )
+
+    print(
+        f"Top K: {TOP_K}"
+    )
+
+    print(
+        "\nVector database: Supabase"
+    )
+
+    print(
+        "\nType 'exit' to stop.\n"
+    )
 
     while True:
 
-        question = input("You: ").strip()
+        question = input(
+            "You: "
+        ).strip()
 
         if question.lower() == "exit":
+
+            print(
+                "\nChat finished."
+            )
+
             break
 
         if not question:
+
             continue
 
-        answer, results = chat(question)
+        try:
 
-        print("\nAssistant:")
-        print(answer)
-
-        print("\nSources:")
-
-        seen_sources = set()
-
-        for document, score in results:
-
-            source = document.metadata.get(
-                "source",
-                "unknown"
+            answer, results = chat(
+                question
             )
 
-            if source not in seen_sources:
+            print(
+                "\nAssistant:"
+            )
 
-                print(f"- {source}")
+            print(
+                answer
+            )
 
-                seen_sources.add(source)
+            # ------------------------------------------------
+            # Sources
+            # ------------------------------------------------
 
-        print("\n" + "=" * 80)
+            print(
+                "\nSources:"
+            )
 
+            seen_sources = set()
+
+            for result in results:
+
+                metadata = result.get(
+                    "metadata"
+                ) or {}
+
+                source = metadata.get(
+                    "source",
+                    "unknown",
+                )
+
+                if source not in seen_sources:
+
+                    similarity = result.get(
+                        "similarity",
+                        0,
+                    )
+
+                    print(
+                        f"- {source} "
+                        f"(similarity: "
+                        f"{similarity:.4f})"
+                    )
+
+                    seen_sources.add(
+                        source
+                    )
+
+            print(
+                "\n" + "=" * 80
+            )
+
+        except Exception as error:
+
+            print(
+                "\nERROR:"
+            )
+
+            print(
+                str(error)
+            )
+
+            print(
+                "\n" + "=" * 80
+            )
+
+
+# ============================================================
+# ENTRY POINT
+# ============================================================
 
 if __name__ == "__main__":
     main()
-

@@ -1,20 +1,13 @@
-from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 
 def get_embedding_model():
-    """
-    Create the embedding model used by the RAG pipeline.
-
-    Ollama must be running locally:
-        http://localhost:11434
-
-    Model:
-        nomic-embed-text:latest
-    """
-
-    embeddings = OllamaEmbeddings(
-        model="nomic-embed-text:latest",
-        base_url="http://localhost:11434",
+    return HuggingFaceEmbeddings(
+        model_name="BAAI/bge-base-en-v1.5",
+        model_kwargs={
+            "device": "cpu",
+        },
+        encode_kwargs={
+            "normalize_embeddings": True,
+        },
     )
-
-    return embeddings

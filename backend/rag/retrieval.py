@@ -1,20 +1,15 @@
+from langchain_huggingface import HuggingFaceEmbeddings
 
-from pathlib import Path
-
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings
+from backend.database.supabase import supabase
 
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
-CHROMA_HOST = "localhost"
-CHROMA_PORT = 8000
+EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
 
-COLLECTION_NAME = "personal_profile"
-
-EMBEDDING_MODEL = "nomic-embed-text:latest"
+EMBEDDING_DIMENSION = 768
 
 TOP_K = 5
 
@@ -27,33 +22,23 @@ def get_embedding_model():
     """
     Use the SAME embedding model that was used
     during document ingestion.
+
+    Model:
+        BAAI/bge-base-en-v1.5
+
+    Dimension:
+        768
     """
 
-    return OllamaEmbeddings(
-        model=EMBEDDING_MODEL,
-        base_url="http://localhost:11434",
+    return HuggingFaceEmbeddings(
+        model_name=EMBEDDING_MODEL,
+        model_kwargs={
+            "device": "cpu",
+        },
+        encode_kwargs={
+            "normalize_embeddings": True,
+        },
     )
-
-
-# ============================================================
-# CHROMA VECTOR STORE
-# ============================================================
-
-def get_vector_store():
-    """
-    Connect to the ChromaDB collection.
-    """
-
-    embeddings = get_embedding_model()
-
-    vector_store = Chroma(
-        collection_name=COLLECTION_NAME,
-        embedding_function=embeddings,
-        host=CHROMA_HOST,
-        port=CHROMA_PORT,
-    )
-
-    return vector_store
 
 
 # ============================================================
@@ -61,20 +46,49 @@ def get_vector_store():
 # ============================================================
 
 def retrieve_documents(
-    vector_store,
     question,
     k=TOP_K,
 ):
     """
-    Search ChromaDB for the most relevant chunks.
+    Search Supabase pgvector for the most
+    relevant chunks.
     """
 
-    results = vector_store.similarity_search_with_score(
-        question,
-        k=k,
+    embeddings = get_embedding_model()
+
+    # --------------------------------------------------------
+    # Generate embedding for the question
+    # --------------------------------------------------------
+
+    query_embedding = embeddings.embed_query(
+        question
     )
 
-    return results
+    # --------------------------------------------------------
+    # Verify embedding dimension
+    # --------------------------------------------------------
+
+    if len(query_embedding) != EMBEDDING_DIMENSION:
+
+        raise ValueError(
+            f"Invalid embedding dimension: "
+            f"expected {EMBEDDING_DIMENSION}, "
+            f"got {len(query_embedding)}"
+        )
+
+    # --------------------------------------------------------
+    # Call Supabase PostgreSQL function
+    # --------------------------------------------------------
+
+    response = supabase.rpc(
+        "match_documents",
+        {
+            "query_embedding": query_embedding,
+            "match_count": k,
+        },
+    ).execute()
+
+    return response.data
 
 
 # ============================================================
@@ -91,7 +105,7 @@ def display_results(
 
     print("\n")
     print("=" * 80)
-    print("RETRIEVAL TEST")
+    print("SUPABASE RAG RETRIEVAL TEST")
     print("=" * 80)
 
     print("\nQUESTION:")
@@ -101,29 +115,49 @@ def display_results(
     print("RETRIEVED DOCUMENTS")
     print("-" * 80)
 
-    for index, (document, score) in enumerate(results):
+    for index, result in enumerate(results):
 
-        print(f"\n### RESULT {index + 1}")
+        print(
+            f"\n### RESULT {index + 1}"
+        )
 
-        print("\nScore:")
-        print(score)
+        print("\nSimilarity:")
+        print(
+            result.get("similarity")
+        )
+
+        metadata = result.get(
+            "metadata"
+        ) or {}
 
         print("\nSource:")
-        print(document.metadata.get("source"))
+        print(
+            metadata.get("source")
+        )
 
         print("\nDocument type:")
-        print(document.metadata.get("document_type"))
+        print(
+            metadata.get("document_type")
+        )
 
         print("\nProject:")
-        print(document.metadata.get("project"))
+        print(
+            metadata.get("project")
+        )
 
         print("\nChunk index:")
-        print(document.metadata.get("chunk_index"))
+        print(
+            metadata.get("chunk_index")
+        )
 
         print("\nContent:")
-        print(document.page_content)
+        print(
+            result.get("content")
+        )
 
-        print("\n" + "-" * 80)
+        print(
+            "\n" + "-" * 80
+        )
 
 
 # ============================================================
@@ -133,15 +167,43 @@ def display_results(
 def main():
 
     print("=" * 80)
-    print("PERSONAL PROFILE RAG — RETRIEVAL TEST")
+
+    print(
+        "PERSONAL PROFILE RAG — "
+        "SUPABASE RETRIEVAL TEST"
+    )
+
     print("=" * 80)
 
-    # Connect to ChromaDB
-    vector_store = get_vector_store()
+    print("\nConnected to Supabase.")
 
-    print("\nConnected to ChromaDB.")
-    print(f"Collection: {COLLECTION_NAME}")
-    print(f"Embedding model: {EMBEDDING_MODEL}")
+    print(
+        f"Embedding model: "
+        f"{EMBEDDING_MODEL}"
+    )
+
+    print(
+        f"Embedding dimension: "
+        f"{EMBEDDING_DIMENSION}"
+    )
+
+    print(
+        f"Top K: {TOP_K}"
+    )
+
+    # --------------------------------------------------------
+    # Load embedding model ONCE
+    # --------------------------------------------------------
+
+    print(
+        "\nLoading embedding model..."
+    )
+
+    embeddings = get_embedding_model()
+
+    print(
+        "Embedding model loaded."
+    )
 
     # --------------------------------------------------------
     # Interactive questions
@@ -155,27 +217,84 @@ def main():
         ).strip()
 
         if question.lower() == "exit":
-            print("\nRetrieval test finished.")
+
+            print(
+                "\nRetrieval test finished."
+            )
+
             break
 
         if not question:
             continue
 
-        results = retrieve_documents(
-            vector_store=vector_store,
-            question=question,
-            k=TOP_K,
-        )
+        try:
 
-        if not results:
-            print("\nNo documents retrieved.")
-            continue
+            # ------------------------------------------------
+            # Generate query embedding
+            # ------------------------------------------------
 
-        display_results(
-            question=question,
-            results=results,
-        )
+            query_embedding = (
+                embeddings.embed_query(
+                    question
+                )
+            )
 
+            # ------------------------------------------------
+            # Verify dimension
+            # ------------------------------------------------
+
+            if len(query_embedding) != EMBEDDING_DIMENSION:
+
+                raise ValueError(
+                    f"Expected "
+                    f"{EMBEDDING_DIMENSION} dimensions, "
+                    f"got "
+                    f"{len(query_embedding)}"
+                )
+
+            # ------------------------------------------------
+            # Search Supabase
+            # ------------------------------------------------
+
+            response = supabase.rpc(
+                "match_documents",
+                {
+                    "query_embedding": query_embedding,
+                    "match_count": TOP_K,
+                },
+            ).execute()
+
+            results = response.data
+
+            if not results:
+
+                print(
+                    "\nNo documents retrieved."
+                )
+
+                continue
+
+            # ------------------------------------------------
+            # Display
+            # ------------------------------------------------
+
+            display_results(
+                question=question,
+                results=results,
+            )
+
+        except Exception as e:
+
+            print(
+                "\nRetrieval error:"
+            )
+
+            print(e)
+
+
+# ============================================================
+# ENTRY POINT
+# ============================================================
 
 if __name__ == "__main__":
     main()
