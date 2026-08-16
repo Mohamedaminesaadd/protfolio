@@ -8,13 +8,13 @@ Architecture:
 
 User
  ↓
-Gemini 2.5 Flash
+Gemini Flash
  ↓
 Tool Call
  ↓
 ToolNode
  ↓
-Gemini 2.5 Flash
+Gemini Flash
  ↓
 Final Answer
 """
@@ -54,11 +54,9 @@ load_dotenv()
 # CONFIGURATION
 # ============================================================
 
-LLM_MODEL = "gemini-2.5-flash"
+LLM_MODEL = "gemini-3-flash-preview"
 
-GOOGLE_API_KEY = os.getenv(
-    "GOOGLE_API_KEY"
-)
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
 # ============================================================
@@ -66,11 +64,10 @@ GOOGLE_API_KEY = os.getenv(
 # ============================================================
 
 if not GOOGLE_API_KEY:
-
     raise RuntimeError(
         "GOOGLE_API_KEY is not set.\n"
-        "Please create a .env file in the project root:\n\n"
-        "GOOGLE_API_KEY=your_api_key"
+        "Please configure GOOGLE_API_KEY "
+        "in the environment variables."
     )
 
 
@@ -90,11 +87,16 @@ llm = ChatGoogleGenerativeAI(
 # ============================================================
 
 tools = [
-
+    # --------------------------------------------------------
     # Personal knowledge / RAG
+    # --------------------------------------------------------
+
     search_profile,
 
+    # --------------------------------------------------------
     # GitHub
+    # --------------------------------------------------------
+
     search_github_repositories,
     find_my_github_project,
     get_github_repository,
@@ -118,10 +120,11 @@ llm_with_tools = llm.bind_tools(
 # ============================================================
 
 """
-For personal questions, force search_profile.
+For personal questions, force the search_profile tool.
 
-This guarantees that questions about Mohamed Amine Saad
-are answered using the personal knowledge base.
+This guarantees that personal information comes from
+the personal knowledge base instead of the LLM's
+pretrained knowledge.
 """
 
 profile_llm = llm.bind_tools(
@@ -138,11 +141,10 @@ def is_personal_question(
     message: str,
 ) -> bool:
     """
-    Determine whether the question is about
+    Determine whether a question is related to
     Mohamed Amine Saad or his portfolio.
 
-    This is only a routing mechanism.
-    The LLM remains responsible for the final answer.
+    This is a lightweight routing mechanism.
     """
 
     text = message.lower().strip()
@@ -218,23 +220,22 @@ def llm_node(state):
 
         User question
              ↓
-        Personal?
-        ┌───────────────┐
-        │               │
-       YES              NO
-        │               │
-        ▼               ▼
-    search_profile   normal tools
-        │               │
-        └───────┬───────┘
-                ▼
-             ToolNode
-                │
-                ▼
-          Gemini 2.5 Flash
-                │
-                ▼
-          Final answer
+        Detect personal question
+             ↓
+        ┌─────────────────────┐
+        │                     │
+       YES                    NO
+        │                     │
+        ▼                     ▼
+    search_profile       normal tools
+        │                     │
+        └──────────┬──────────┘
+                   ↓
+                ToolNode
+                   ↓
+              Gemini Flash
+                   ↓
+              Final answer
     """
 
     messages = state["messages"]
@@ -244,7 +245,6 @@ def llm_node(state):
     # ========================================================
 
     if not messages:
-
         return {
             "messages": []
         }
@@ -269,6 +269,10 @@ def llm_node(state):
 
         print(
             "\n[LLM] Tool result received."
+        )
+
+        print(
+            f"[LLM] Model: {LLM_MODEL}"
         )
 
         print(
@@ -303,7 +307,6 @@ def llm_node(state):
         user_message,
         str,
     ):
-
         user_message = str(
             user_message
         )
