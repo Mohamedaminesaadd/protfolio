@@ -31,6 +31,7 @@ app.add_middleware(
 
     allow_origins=[
         "http://localhost:4200",
+        "https://frontendprotfolio.onrender.com",
     ],
 
     allow_credentials=True,

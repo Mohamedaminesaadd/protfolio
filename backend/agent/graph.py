@@ -143,15 +143,12 @@ builder.add_edge(
 
 connection_pool = ConnectionPool(
     conninfo=SUPABASE_DB_URL,
-
     max_size=10,
-
     kwargs={
         "autocommit": True,
         "prepare_threshold": None,
     },
 )
-
 
 # ============================================================
 # LANGGRAPH CHECKPOINTER

@@ -14,6 +14,7 @@ langchain
 langchain-core
 langchain-community
 langgraph
+langgraph-prebuilt
 
 
 # ============================================================
@@ -25,13 +26,12 @@ google-genai
 
 
 # ============================================================
-# HUGGING FACE EMBEDDINGS
+# HUGGING FACE / BGE EMBEDDINGS
 # ============================================================
 
 langchain-huggingface
 sentence-transformers
 transformers
-torch
 
 
 # ============================================================
@@ -42,12 +42,12 @@ supabase
 
 
 # ============================================================
-# POSTGRESQL / LANGGRAPH CHECKPOINT
+# LANGGRAPH POSTGRES CHECKPOINTER
 # ============================================================
 
+langgraph-checkpoint-postgres
 psycopg[binary]
 psycopg-pool
-langgraph-checkpoint-postgres
 
 
 # ============================================================
