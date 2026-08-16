@@ -148,7 +148,7 @@ connection_pool = ConnectionPool(
 
     kwargs={
         "autocommit": True,
-        "prepare_threshold": 0,
+        "prepare_threshold": None,
     },
 )
 
