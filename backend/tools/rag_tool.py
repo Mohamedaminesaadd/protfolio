@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from backend.database.supabase import supabase
 
@@ -8,7 +8,7 @@ from backend.database.supabase import supabase
 # CONFIGURATION
 # ============================================================
 
-EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
+EMBEDDING_MODEL = "gemini-embedding-2"
 
 EMBEDDING_DIMENSION = 768
 
@@ -19,32 +19,10 @@ TOP_K = 5
 # EMBEDDINGS
 # ============================================================
 
-embeddings = HuggingFaceEmbeddings(
-    model_name=EMBEDDING_MODEL,
-    model_kwargs={
-        "device": "cpu",
-    },
-    encode_kwargs={
-        "normalize_embeddings": True,
-    },
+embeddings = GoogleGenerativeAIEmbeddings(
+    model=EMBEDDING_MODEL,
+    output_dimensionality=EMBEDDING_DIMENSION,
 )
-
-
-# ============================================================
-# VERIFY EMBEDDING DIMENSION
-# ============================================================
-
-_test_embedding = embeddings.embed_query(
-    "What is HPIS?"
-)
-
-if len(_test_embedding) != EMBEDDING_DIMENSION:
-
-    raise ValueError(
-        f"Invalid embedding dimension. "
-        f"Expected {EMBEDDING_DIMENSION}, "
-        f"got {len(_test_embedding)}"
-    )
 
 
 # ============================================================
@@ -78,8 +56,7 @@ def search_profile(question: str) -> str:
     - project architecture
     - datasets
 
-    The tool retrieves relevant information from the
-    personal knowledge base using BGE embeddings and
+    The tool uses Gemini Embedding 2 to search
     Supabase pgvector.
     """
 
@@ -90,18 +67,23 @@ def search_profile(question: str) -> str:
     question = question.strip()
 
     if not question:
-
-        return (
-            "No question was provided."
-        )
+        return "No question was provided."
 
     # --------------------------------------------------------
     # Generate query embedding
     # --------------------------------------------------------
 
-    query_embedding = embeddings.embed_query(
-        question
-    )
+    try:
+        query_embedding = embeddings.embed_query(
+            question
+        )
+
+    except Exception as error:
+
+        return (
+            "Unable to generate the search embedding. "
+            f"Embedding error: {error}"
+        )
 
     # --------------------------------------------------------
     # Verify dimension
@@ -119,13 +101,22 @@ def search_profile(question: str) -> str:
     # Search Supabase / pgvector
     # --------------------------------------------------------
 
-    response = supabase.rpc(
-        "match_documents",
-        {
-            "query_embedding": query_embedding,
-            "match_count": TOP_K,
-        },
-    ).execute()
+    try:
+
+        response = supabase.rpc(
+            "match_documents",
+            {
+                "query_embedding": query_embedding,
+                "match_count": TOP_K,
+            },
+        ).execute()
+
+    except Exception as error:
+
+        return (
+            "Unable to search the personal knowledge base. "
+            f"Database error: {error}"
+        )
 
     results = response.data
 
@@ -218,13 +209,13 @@ if __name__ == "__main__":
     print("=" * 80)
 
     print(
-        f"\nEmbedding model:"
-        f" {EMBEDDING_MODEL}"
+        f"\nEmbedding model: "
+        f"{EMBEDDING_MODEL}"
     )
 
     print(
-        f"Embedding dimension:"
-        f" {EMBEDDING_DIMENSION}"
+        f"Embedding dimension: "
+        f"{EMBEDDING_DIMENSION}"
     )
 
     print(
@@ -235,15 +226,38 @@ if __name__ == "__main__":
         "\nQuestion:"
     )
 
-    print(
-        question
-    )
+    print(question)
 
     print(
-        "\nSearching Supabase..."
+        "\nGenerating Gemini embedding..."
     )
 
     try:
+
+        test_embedding = embeddings.embed_query(
+            question
+        )
+
+        print(
+            f"Embedding dimension: "
+            f"{len(test_embedding)}"
+        )
+
+        if len(test_embedding) != EMBEDDING_DIMENSION:
+
+            raise ValueError(
+                f"Expected {EMBEDDING_DIMENSION} "
+                f"dimensions, got "
+                f"{len(test_embedding)}"
+            )
+
+        print(
+            "Embedding dimension: OK"
+        )
+
+        print(
+            "\nSearching Supabase..."
+        )
 
         result = search_profile.invoke(
             {
@@ -255,9 +269,7 @@ if __name__ == "__main__":
             "\nRetrieved context:"
         )
 
-        print(
-            result
-        )
+        print(result)
 
     except Exception as error:
 
@@ -265,6 +277,4 @@ if __name__ == "__main__":
             "\nRAG TOOL ERROR:"
         )
 
-        print(
-            error
-        )
+        print(error)

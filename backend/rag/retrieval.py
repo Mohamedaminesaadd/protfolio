@@ -1,13 +1,25 @@
-from langchain_huggingface import HuggingFaceEmbeddings
+import os
+
+from dotenv import load_dotenv
+from langchain_google_genai import (
+    GoogleGenerativeAIEmbeddings,
+)
 
 from backend.database.supabase import supabase
+
+
+# ============================================================
+# LOAD ENVIRONMENT
+# ============================================================
+
+load_dotenv()
 
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
-EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
+EMBEDDING_MODEL = "gemini-embedding-2"
 
 EMBEDDING_DIMENSION = 768
 
@@ -20,24 +32,79 @@ TOP_K = 5
 
 def get_embedding_model():
     """
-    Use the SAME embedding model that was used
-    during document ingestion.
+    Create the Gemini Embedding 2 model.
+
+    IMPORTANT:
+    The query embedding MUST use exactly the same
+    model and dimensionality used during ingestion.
 
     Model:
-        BAAI/bge-base-en-v1.5
+        gemini-embedding-2
 
     Dimension:
         768
     """
 
-    return HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={
-            "device": "cpu",
-        },
-        encode_kwargs={
-            "normalize_embeddings": True,
-        },
+    api_key = os.getenv("GOOGLE_API_KEY")
+
+    if not api_key:
+        raise RuntimeError(
+            "GOOGLE_API_KEY environment variable "
+            "is not set."
+        )
+
+    return GoogleGenerativeAIEmbeddings(
+        model=EMBEDDING_MODEL,
+        google_api_key=api_key,
+        output_dimensionality=EMBEDDING_DIMENSION,
+    )
+
+
+# ============================================================
+# LOAD MODEL ONCE
+# ============================================================
+
+print(
+    f"Loading embedding model: "
+    f"{EMBEDDING_MODEL}"
+)
+
+embeddings = get_embedding_model()
+
+print(
+    f"Embedding dimension: "
+    f"{EMBEDDING_DIMENSION}"
+)
+
+
+# ============================================================
+# VERIFY EMBEDDING MODEL
+# ============================================================
+
+def verify_embedding_model():
+    """
+    Verify that Gemini returns the expected
+    vector dimension.
+    """
+
+    test_embedding = embeddings.embed_query(
+        "What is HPIS?"
+    )
+
+    actual_dimension = len(
+        test_embedding
+    )
+
+    if actual_dimension != EMBEDDING_DIMENSION:
+
+        raise ValueError(
+            f"Invalid embedding dimension. "
+            f"Expected {EMBEDDING_DIMENSION}, "
+            f"got {actual_dimension}"
+        )
+
+    print(
+        "Embedding verification: OK"
     )
 
 
@@ -46,18 +113,20 @@ def get_embedding_model():
 # ============================================================
 
 def retrieve_documents(
-    question,
-    k=TOP_K,
+    question: str,
+    k: int = TOP_K,
 ):
     """
-    Search Supabase pgvector for the most
-    relevant chunks.
+    Search Supabase pgvector using Gemini Embedding 2.
     """
 
-    embeddings = get_embedding_model()
+    question = question.strip()
+
+    if not question:
+        return []
 
     # --------------------------------------------------------
-    # Generate embedding for the question
+    # Generate query embedding
     # --------------------------------------------------------
 
     query_embedding = embeddings.embed_query(
@@ -65,19 +134,19 @@ def retrieve_documents(
     )
 
     # --------------------------------------------------------
-    # Verify embedding dimension
+    # Verify dimension
     # --------------------------------------------------------
 
     if len(query_embedding) != EMBEDDING_DIMENSION:
 
         raise ValueError(
-            f"Invalid embedding dimension: "
-            f"expected {EMBEDDING_DIMENSION}, "
+            f"Invalid query embedding dimension. "
+            f"Expected {EMBEDDING_DIMENSION}, "
             f"got {len(query_embedding)}"
         )
 
     # --------------------------------------------------------
-    # Call Supabase PostgreSQL function
+    # Search Supabase
     # --------------------------------------------------------
 
     response = supabase.rpc(
@@ -88,7 +157,7 @@ def retrieve_documents(
         },
     ).execute()
 
-    return response.data
+    return response.data or []
 
 
 # ============================================================
@@ -100,7 +169,7 @@ def display_results(
     results,
 ):
     """
-    Print retrieved chunks and metadata.
+    Display retrieved chunks.
     """
 
     print("\n")
@@ -111,9 +180,25 @@ def display_results(
     print("\nQUESTION:")
     print(question)
 
+    print(
+        f"\nEmbedding model: "
+        f"{EMBEDDING_MODEL}"
+    )
+
+    print(
+        f"Embedding dimension: "
+        f"{EMBEDDING_DIMENSION}"
+    )
+
     print("\n" + "-" * 80)
     print("RETRIEVED DOCUMENTS")
     print("-" * 80)
+
+    if not results:
+
+        print("\nNo documents retrieved.")
+
+        return
 
     for index, result in enumerate(results):
 
@@ -122,37 +207,62 @@ def display_results(
         )
 
         print("\nSimilarity:")
+
         print(
-            result.get("similarity")
+            result.get(
+                "similarity",
+                0,
+            )
         )
 
-        metadata = result.get(
-            "metadata"
-        ) or {}
+        metadata = (
+            result.get("metadata")
+            or {}
+        )
 
         print("\nSource:")
+
         print(
-            metadata.get("source")
+            metadata.get(
+                "source",
+                "unknown",
+            )
         )
 
         print("\nDocument type:")
+
         print(
-            metadata.get("document_type")
+            metadata.get(
+                "document_type",
+                "unknown",
+            )
         )
 
         print("\nProject:")
+
         print(
-            metadata.get("project")
+            metadata.get(
+                "project",
+                "",
+            )
         )
 
         print("\nChunk index:")
+
         print(
-            metadata.get("chunk_index")
+            metadata.get(
+                "chunk_index",
+                "unknown",
+            )
         )
 
         print("\nContent:")
+
         print(
-            result.get("content")
+            result.get(
+                "content",
+                "",
+            )
         )
 
         print(
@@ -169,16 +279,17 @@ def main():
     print("=" * 80)
 
     print(
-        "PERSONAL PROFILE RAG — "
+        "PERSONAL PROFILE RAG"
+    )
+
+    print(
         "SUPABASE RETRIEVAL TEST"
     )
 
     print("=" * 80)
 
-    print("\nConnected to Supabase.")
-
     print(
-        f"Embedding model: "
+        f"\nEmbedding model: "
         f"{EMBEDDING_MODEL}"
     )
 
@@ -192,21 +303,29 @@ def main():
     )
 
     # --------------------------------------------------------
-    # Load embedding model ONCE
+    # Verify model once
     # --------------------------------------------------------
 
     print(
-        "\nLoading embedding model..."
+        "\nVerifying embedding model..."
     )
 
-    embeddings = get_embedding_model()
+    try:
 
-    print(
-        "Embedding model loaded."
-    )
+        verify_embedding_model()
+
+    except Exception as error:
+
+        print(
+            "\nEmbedding verification failed:"
+        )
+
+        print(error)
+
+        return
 
     # --------------------------------------------------------
-    # Interactive questions
+    # Interactive retrieval
     # --------------------------------------------------------
 
     while True:
@@ -229,67 +348,23 @@ def main():
 
         try:
 
-            # ------------------------------------------------
-            # Generate query embedding
-            # ------------------------------------------------
-
-            query_embedding = (
-                embeddings.embed_query(
-                    question
-                )
+            results = retrieve_documents(
+                question=question,
+                k=TOP_K,
             )
-
-            # ------------------------------------------------
-            # Verify dimension
-            # ------------------------------------------------
-
-            if len(query_embedding) != EMBEDDING_DIMENSION:
-
-                raise ValueError(
-                    f"Expected "
-                    f"{EMBEDDING_DIMENSION} dimensions, "
-                    f"got "
-                    f"{len(query_embedding)}"
-                )
-
-            # ------------------------------------------------
-            # Search Supabase
-            # ------------------------------------------------
-
-            response = supabase.rpc(
-                "match_documents",
-                {
-                    "query_embedding": query_embedding,
-                    "match_count": TOP_K,
-                },
-            ).execute()
-
-            results = response.data
-
-            if not results:
-
-                print(
-                    "\nNo documents retrieved."
-                )
-
-                continue
-
-            # ------------------------------------------------
-            # Display
-            # ------------------------------------------------
 
             display_results(
                 question=question,
                 results=results,
             )
 
-        except Exception as e:
+        except Exception as error:
 
             print(
                 "\nRetrieval error:"
             )
 
-            print(e)
+            print(error)
 
 
 # ============================================================
@@ -297,4 +372,5 @@ def main():
 # ============================================================
 
 if __name__ == "__main__":
+
     main()

@@ -47,7 +47,6 @@ from backend.tools.github_tool import (
 # ENVIRONMENT
 # ============================================================
 
-# Load variables from .env
 load_dotenv()
 
 
@@ -55,9 +54,11 @@ load_dotenv()
 # CONFIGURATION
 # ============================================================
 
-LLM_MODEL = "Gemini 3 Flash"
+LLM_MODEL = "gemini-2.5-flash"
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = os.getenv(
+    "GOOGLE_API_KEY"
+)
 
 
 # ============================================================
@@ -78,10 +79,11 @@ if not GOOGLE_API_KEY:
 # ============================================================
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-3-flash-preview",
+    model=LLM_MODEL,
     google_api_key=GOOGLE_API_KEY,
     temperature=0.2,
 )
+
 
 # ============================================================
 # TOOLS
@@ -89,16 +91,10 @@ llm = ChatGoogleGenerativeAI(
 
 tools = [
 
-    # --------------------------------------------------------
     # Personal knowledge / RAG
-    # --------------------------------------------------------
-
     search_profile,
 
-    # --------------------------------------------------------
     # GitHub
-    # --------------------------------------------------------
-
     search_github_repositories,
     find_my_github_project,
     get_github_repository,
@@ -122,11 +118,10 @@ llm_with_tools = llm.bind_tools(
 # ============================================================
 
 """
-For personal questions, force the personal knowledge tool.
+For personal questions, force search_profile.
 
-This prevents the model from answering personal questions
-using pretrained knowledge without first consulting the
-knowledge base.
+This guarantees that questions about Mohamed Amine Saad
+are answered using the personal knowledge base.
 """
 
 profile_llm = llm.bind_tools(
@@ -139,13 +134,15 @@ profile_llm = llm.bind_tools(
 # PERSONAL QUESTION DETECTION
 # ============================================================
 
-def is_personal_question(message: str) -> bool:
+def is_personal_question(
+    message: str,
+) -> bool:
     """
-    Determine whether a question is likely about
+    Determine whether the question is about
     Mohamed Amine Saad or his portfolio.
 
-    This is only a lightweight routing mechanism.
-    The final decision is still handled by the LLM.
+    This is only a routing mechanism.
+    The LLM remains responsible for the final answer.
     """
 
     text = message.lower().strip()
@@ -187,7 +184,7 @@ def is_personal_question(message: str) -> bool:
         "his background",
 
         # ----------------------------------------------------
-        # Portfolio concepts
+        # Portfolio references
         # ----------------------------------------------------
 
         "my project",
@@ -195,7 +192,7 @@ def is_personal_question(message: str) -> bool:
         "that project",
 
         # ----------------------------------------------------
-        # Known personal project concepts
+        # Known projects
         # ----------------------------------------------------
 
         "hpis",
@@ -221,24 +218,23 @@ def llm_node(state):
 
         User question
              ↓
-        Detect personal question
-             ↓
-        ┌─────────────────────┐
-        │                     │
-        ▼                     ▼
-    Personal              General
-        │                     │
-        ▼                     ▼
-    search_profile       normal tools
-        │
-        ▼
-      ToolNode
-        │
-        ▼
-       LLM
-        │
-        ▼
-    Final answer
+        Personal?
+        ┌───────────────┐
+        │               │
+       YES              NO
+        │               │
+        ▼               ▼
+    search_profile   normal tools
+        │               │
+        └───────┬───────┘
+                ▼
+             ToolNode
+                │
+                ▼
+          Gemini 2.5 Flash
+                │
+                ▼
+          Final answer
     """
 
     messages = state["messages"]

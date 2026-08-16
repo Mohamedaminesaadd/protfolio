@@ -1,11 +1,22 @@
+import os
+
 from pathlib import Path
 from uuid import uuid5, NAMESPACE_URL
+
+from dotenv import load_dotenv
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from backend.rag.embeddings import get_embedding_model
 from backend.database.supabase import supabase
+
+
+# ============================================================
+# LOAD ENVIRONMENT
+# ============================================================
+
+load_dotenv()
 
 
 # ============================================================
@@ -21,7 +32,10 @@ CHUNK_OVERLAP = 80
 
 TABLE_NAME = "documents"
 
-EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
+# Gemini Embedding 2
+EMBEDDING_MODEL_NAME = "gemini-embedding-2"
+
+# Recommended reduced dimension for Gemini Embedding 2
 EMBEDDING_DIMENSION = 768
 
 
@@ -32,16 +46,23 @@ EMBEDDING_DIMENSION = 768
 def find_markdown_files():
     """Find all Markdown files inside the knowledge directory."""
 
-    files = sorted(KNOWLEDGE_DIR.rglob("*.md"))
+    files = sorted(
+        KNOWLEDGE_DIR.rglob("*.md")
+    )
 
     print("=" * 70)
     print("MARKDOWN FILES")
     print("=" * 70)
 
     for file in files:
-        print(f"  {file.relative_to(PROJECT_ROOT)}")
 
-    print(f"\nTotal files: {len(files)}")
+        print(
+            f"  {file.relative_to(PROJECT_ROOT)}"
+        )
+
+    print(
+        f"\nTotal files: {len(files)}"
+    )
 
     return files
 
@@ -53,7 +74,9 @@ def find_markdown_files():
 def get_document_metadata(file: Path):
     """Build metadata for a knowledge file."""
 
-    relative_path = file.relative_to(KNOWLEDGE_DIR)
+    relative_path = file.relative_to(
+        KNOWLEDGE_DIR
+    )
 
     parts = file.parts
 
@@ -77,7 +100,10 @@ def get_document_metadata(file: Path):
         document_type = "profile"
         project_name = ""
 
-    elif file.stem == "experience":
+    elif file.stem in {
+        "experience",
+        "expercience",
+    }:
 
         document_type = "experience"
         project_name = ""
@@ -111,23 +137,42 @@ def load_documents(files):
         ).strip()
 
         if not text:
-            print(f"Skipping empty file: {file}")
+
+            print(
+                f"Skipping empty file: {file}"
+            )
+
             continue
 
-        metadata = get_document_metadata(file)
+        metadata = get_document_metadata(
+            file
+        )
 
         document = Document(
             page_content=text,
             metadata=metadata,
         )
 
-        documents.append(document)
+        documents.append(
+            document
+        )
 
-    print("\n" + "=" * 70)
-    print("DOCUMENTS LOADED")
-    print("=" * 70)
+    print(
+        "\n" + "=" * 70
+    )
 
-    print(f"Documents loaded: {len(documents)}")
+    print(
+        "DOCUMENTS LOADED"
+    )
+
+    print(
+        "=" * 70
+    )
+
+    print(
+        f"Documents loaded: "
+        f"{len(documents)}"
+    )
 
     return documents
 
@@ -138,11 +183,14 @@ def load_documents(files):
 
 def split_documents(documents):
     """
-    Split documents while trying to preserve Markdown structure.
+    Split documents while preserving
+    Markdown structure where possible.
     """
 
     splitter = RecursiveCharacterTextSplitter(
+
         chunk_size=CHUNK_SIZE,
+
         chunk_overlap=CHUNK_OVERLAP,
 
         separators=[
@@ -156,16 +204,41 @@ def split_documents(documents):
         ],
     )
 
-    chunks = splitter.split_documents(documents)
+    chunks = splitter.split_documents(
+        documents
+    )
 
-    print("\n" + "=" * 70)
-    print("CHUNKING")
-    print("=" * 70)
+    print(
+        "\n" + "=" * 70
+    )
 
-    print(f"Original documents : {len(documents)}")
-    print(f"Generated chunks   : {len(chunks)}")
-    print(f"Chunk size         : {CHUNK_SIZE}")
-    print(f"Chunk overlap      : {CHUNK_OVERLAP}")
+    print(
+        "CHUNKING"
+    )
+
+    print(
+        "=" * 70
+    )
+
+    print(
+        f"Original documents : "
+        f"{len(documents)}"
+    )
+
+    print(
+        f"Generated chunks   : "
+        f"{len(chunks)}"
+    )
+
+    print(
+        f"Chunk size         : "
+        f"{CHUNK_SIZE}"
+    )
+
+    print(
+        f"Chunk overlap      : "
+        f"{CHUNK_OVERLAP}"
+    )
 
     return chunks
 
@@ -176,21 +249,29 @@ def split_documents(documents):
 
 def enrich_metadata(chunks):
     """
-    Add deterministic chunk indexes and UUIDs.
+    Add deterministic chunk indexes
+    and UUIDs.
     """
 
     counters = {}
 
     for chunk in chunks:
 
-        source = chunk.metadata["source"]
+        source = chunk.metadata[
+            "source"
+        ]
 
         if source not in counters:
+
             counters[source] = 0
 
-        chunk_index = counters[source]
+        chunk_index = counters[
+            source
+        ]
 
-        chunk.metadata["chunk_index"] = chunk_index
+        chunk.metadata[
+            "chunk_index"
+        ] = chunk_index
 
         chunk_id_string = (
             f"{source}:{chunk_index}"
@@ -203,9 +284,13 @@ def enrich_metadata(chunks):
             )
         )
 
-        chunk.metadata["chunk_id"] = chunk_id
+        chunk.metadata[
+            "chunk_id"
+        ] = chunk_id
 
-        counters[source] += 1
+        counters[
+            source
+        ] += 1
 
     return chunks
 
@@ -214,16 +299,31 @@ def enrich_metadata(chunks):
 # STEP 6 — SHOW CHUNK EXAMPLES
 # ============================================================
 
-def show_chunk_examples(chunks, number=5):
+def show_chunk_examples(
+    chunks,
+    number=5,
+):
     """Display a few chunks for inspection."""
 
-    print("\n" + "=" * 70)
-    print("CHUNK EXAMPLES")
-    print("=" * 70)
+    print(
+        "\n" + "=" * 70
+    )
 
-    for i, chunk in enumerate(chunks[:number]):
+    print(
+        "CHUNK EXAMPLES"
+    )
 
-        print(f"\n--- Chunk {i} ---")
+    print(
+        "=" * 70
+    )
+
+    for i, chunk in enumerate(
+        chunks[:number]
+    ):
+
+        print(
+            f"\n--- Chunk {i} ---"
+        )
 
         print(
             f"Source      : "
@@ -250,7 +350,9 @@ def show_chunk_examples(chunks, number=5):
             f"{chunk.metadata.get('chunk_id')}"
         )
 
-        print("\nText:")
+        print(
+            "\nText:"
+        )
 
         print(
             chunk.page_content[:500]
@@ -258,19 +360,17 @@ def show_chunk_examples(chunks, number=5):
 
 
 # ============================================================
-# STEP 7 — GENERATE EMBEDDINGS
+# STEP 7 — GENERATE GEMINI EMBEDDINGS
 # ============================================================
+import time
+
+from google.api_core.exceptions import ResourceExhausted
+
 
 def generate_embeddings(chunks):
-    """
-    Generate embeddings for all chunks using BGE.
-
-    BAAI/bge-base-en-v1.5:
-        768 dimensions
-    """
 
     print("\n" + "=" * 70)
-    print("GENERATING EMBEDDINGS")
+    print("GENERATING GEMINI EMBEDDINGS")
     print("=" * 70)
 
     print(
@@ -292,46 +392,169 @@ def generate_embeddings(chunks):
         f"Texts to embed: {len(texts)}"
     )
 
-    # Batch embedding
-    embeddings = embedding_model.embed_documents(
-        texts
-    )
+    # --------------------------------------------------------
+    # Configuration
+    # --------------------------------------------------------
 
-    # Verify dimension
-    if embeddings:
+    batch_size = 20
 
-        actual_dimension = len(
-            embeddings[0]
+    max_retries = 5
+
+    retry_delay = 10
+
+    embeddings = []
+
+    total = len(texts)
+
+    # --------------------------------------------------------
+    # Process batches
+    # --------------------------------------------------------
+
+    for start in range(
+        0,
+        total,
+        batch_size,
+    ):
+
+        batch = texts[
+            start:start + batch_size
+        ]
+
+        end = min(
+            start + batch_size,
+            total,
         )
 
         print(
-            f"Actual embedding dimension: "
-            f"{actual_dimension}"
+            f"\nEmbedding "
+            f"{start + 1}-{end}/{total}"
         )
 
-        if actual_dimension != EMBEDDING_DIMENSION:
+        # ----------------------------------------------------
+        # Retry on quota errors
+        # ----------------------------------------------------
 
-            raise ValueError(
-                f"Wrong embedding dimension. "
-                f"Expected {EMBEDDING_DIMENSION}, "
-                f"got {actual_dimension}"
-            )
+        for attempt in range(
+            max_retries
+        ):
+
+            try:
+
+                batch_embeddings = (
+                    embedding_model.embed_documents(
+                        batch
+                    )
+                )
+
+                embeddings.extend(
+                    batch_embeddings
+                )
+
+                print(
+                    f"Success: "
+                    f"{len(embeddings)}/{total}"
+                )
+
+                break
+
+            except Exception as error:
+
+                error_text = str(error)
+
+                if (
+                    "429" not in error_text
+                    and
+                    "RESOURCE_EXHAUSTED"
+                    not in error_text
+                ):
+
+                    raise
+
+                if attempt == (
+                    max_retries - 1
+                ):
+
+                    raise RuntimeError(
+                        "Gemini embedding quota "
+                        "was exceeded after "
+                        f"{max_retries} retries."
+                    ) from error
+
+                wait_time = (
+                    retry_delay
+                    * (attempt + 1)
+                )
+
+                print(
+                    f"Rate limit reached."
+                )
+
+                print(
+                    f"Waiting "
+                    f"{wait_time}s..."
+                )
+
+                time.sleep(
+                    wait_time
+                )
+
+        # ----------------------------------------------------
+        # Small delay between batches
+        # ----------------------------------------------------
+
+        time.sleep(2)
+
+    # --------------------------------------------------------
+    # Verify
+    # --------------------------------------------------------
+
+    if len(embeddings) != total:
+
+        raise ValueError(
+            f"Expected {total} embeddings, "
+            f"got {len(embeddings)}"
+        )
+
+    actual_dimension = len(
+        embeddings[0]
+    )
+
+    if actual_dimension != (
+        EMBEDDING_DIMENSION
+    ):
+
+        raise ValueError(
+            f"Expected "
+            f"{EMBEDDING_DIMENSION} dimensions, "
+            f"got {actual_dimension}"
+        )
+
+    print("\n" + "=" * 70)
+    print("EMBEDDING GENERATION COMPLETE")
+    print("=" * 70)
 
     print(
-        "Embeddings generated successfully."
+        f"Embeddings: {len(embeddings)}"
+    )
+
+    print(
+        f"Dimension : {actual_dimension}"
     )
 
     return embeddings
-
-
 # ============================================================
 # STEP 8 — BUILD SUPABASE ROWS
 # ============================================================
 
-def build_rows(chunks, embeddings):
+def build_rows(
+    chunks,
+    embeddings,
+):
     """Create rows compatible with Supabase."""
 
-    if len(chunks) != len(embeddings):
+    if len(chunks) != len(
+        embeddings
+    ):
 
         raise ValueError(
             "Number of chunks and embeddings "
@@ -346,31 +569,89 @@ def build_rows(chunks, embeddings):
     ):
 
         row = {
-            "chunk_id": chunk.metadata["chunk_id"],
+            "chunk_id": chunk.metadata[
+                "chunk_id"
+            ],
+
             "content": chunk.page_content,
+
             "metadata": chunk.metadata,
+
             "embedding": embedding,
         }
 
-        rows.append(row)
+        rows.append(
+            row
+        )
 
     return rows
 
 
 # ============================================================
-# STEP 9 — STORE DOCUMENTS IN SUPABASE
+# STEP 9 — CLEAR OLD EMBEDDINGS
+# ============================================================
+
+def clear_old_documents():
+    """
+    Delete the previous RAG vectors.
+
+    IMPORTANT:
+    This is necessary because the embedding model
+    has changed from BGE to Gemini Embedding 2.
+    """
+
+    print(
+        "\n" + "=" * 70
+    )
+
+    print(
+        "CLEARING OLD RAG DATA"
+    )
+
+    print(
+        "=" * 70
+    )
+
+    response = (
+        supabase
+        .table(TABLE_NAME)
+        .delete()
+        .neq(
+            "chunk_id",
+            "00000000-0000-0000-0000-000000000000",
+        )
+        .execute()
+    )
+
+    print(
+        "Old RAG documents removed."
+    )
+
+
+# ============================================================
+# STEP 10 — STORE DOCUMENTS
 # ============================================================
 
 def store_documents(rows):
-    """Upload embeddings and metadata to Supabase."""
+    """Upload Gemini embeddings and metadata."""
 
-    print("\n" + "=" * 70)
-    print("SUPABASE STORAGE")
-    print("=" * 70)
+    print(
+        "\n" + "=" * 70
+    )
+
+    print(
+        "SUPABASE STORAGE"
+    )
+
+    print(
+        "=" * 70
+    )
 
     if not rows:
 
-        print("No rows to insert.")
+        print(
+            "No rows to insert."
+        )
 
         return
 
@@ -401,10 +682,7 @@ def store_documents(rows):
         (
             supabase
             .table(TABLE_NAME)
-            .upsert(
-                batch,
-                on_conflict="chunk_id",
-            )
+            .insert(batch)
             .execute()
         )
 
@@ -424,11 +702,11 @@ def store_documents(rows):
 
 
 # ============================================================
-# STEP 10 — VERIFY SUPABASE
+# STEP 11 — VERIFY SUPABASE
 # ============================================================
 
 def verify_collection():
-    """Verify number of stored documents."""
+    """Verify the number of stored documents."""
 
     response = (
         supabase
@@ -440,38 +718,55 @@ def verify_collection():
         .execute()
     )
 
-    count = response.count or 0
-
-    print("\n" + "=" * 70)
-    print("SUPABASE VERIFICATION")
-    print("=" * 70)
-
-    print(
-        f"Table      : {TABLE_NAME}"
+    count = (
+        response.count or 0
     )
 
     print(
-        f"Documents  : {count}"
+        "\n" + "=" * 70
     )
 
     print(
-        f"Model      : {EMBEDDING_MODEL_NAME}"
+        "SUPABASE VERIFICATION"
     )
 
     print(
-        f"Dimensions : {EMBEDDING_DIMENSION}"
+        "=" * 70
+    )
+
+    print(
+        f"Table      : "
+        f"{TABLE_NAME}"
+    )
+
+    print(
+        f"Documents  : "
+        f"{count}"
+    )
+
+    print(
+        f"Model      : "
+        f"{EMBEDDING_MODEL_NAME}"
+    )
+
+    print(
+        f"Dimensions : "
+        f"{EMBEDDING_DIMENSION}"
     )
 
 
 # ============================================================
-# STEP 11 — MAIN PIPELINE
+# STEP 12 — MAIN PIPELINE
 # ============================================================
 
 def main():
 
     print("\n")
 
-    print("=" * 70)
+    print(
+        "=" * 70
+    )
+
     print(
         "PERSONAL PROFILE RAG"
     )
@@ -480,13 +775,34 @@ def main():
         "SUPABASE INGESTION PIPELINE"
     )
 
-    print("=" * 70)
+    print(
+        "=" * 70
+    )
 
     # --------------------------------------------------------
-    # 1. Find files
+    # 1. Verify API key
     # --------------------------------------------------------
 
-    files = find_markdown_files()
+    if not os.getenv(
+        "GOOGLE_API_KEY"
+    ):
+
+        raise RuntimeError(
+            "GOOGLE_API_KEY environment "
+            "variable is not set."
+        )
+
+    print(
+        "\nGemini API key: OK"
+    )
+
+    # --------------------------------------------------------
+    # 2. Find files
+    # --------------------------------------------------------
+
+    files = (
+        find_markdown_files()
+    )
 
     if not files:
 
@@ -497,11 +813,11 @@ def main():
         return
 
     # --------------------------------------------------------
-    # 2. Load documents
+    # 3. Load documents
     # --------------------------------------------------------
 
-    documents = load_documents(
-        files
+    documents = (
+        load_documents(files)
     )
 
     if not documents:
@@ -513,11 +829,11 @@ def main():
         return
 
     # --------------------------------------------------------
-    # 3. Split documents
+    # 4. Split documents
     # --------------------------------------------------------
 
-    chunks = split_documents(
-        documents
+    chunks = (
+        split_documents(documents)
     )
 
     if not chunks:
@@ -529,15 +845,15 @@ def main():
         return
 
     # --------------------------------------------------------
-    # 4. Add metadata
+    # 5. Add metadata
     # --------------------------------------------------------
 
-    chunks = enrich_metadata(
-        chunks
+    chunks = (
+        enrich_metadata(chunks)
     )
 
     # --------------------------------------------------------
-    # 5. Show examples
+    # 6. Show examples
     # --------------------------------------------------------
 
     show_chunk_examples(
@@ -545,15 +861,17 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 6. Generate BGE embeddings
+    # 7. Generate Gemini embeddings
     # --------------------------------------------------------
 
-    embeddings = generate_embeddings(
-        chunks
+    embeddings = (
+        generate_embeddings(
+            chunks
+        )
     )
 
     # --------------------------------------------------------
-    # 7. Build database rows
+    # 8. Build database rows
     # --------------------------------------------------------
 
     rows = build_rows(
@@ -562,7 +880,13 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 8. Store in Supabase
+    # 9. Clear old BGE vectors
+    # --------------------------------------------------------
+
+    clear_old_documents()
+
+    # --------------------------------------------------------
+    # 10. Store Gemini vectors
     # --------------------------------------------------------
 
     store_documents(
@@ -570,7 +894,7 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 9. Verify
+    # 11. Verify
     # --------------------------------------------------------
 
     verify_collection()
@@ -579,20 +903,31 @@ def main():
     # DONE
     # --------------------------------------------------------
 
-    print("\n" + "=" * 70)
-    print("INGESTION COMPLETE")
-    print("=" * 70)
-
     print(
-        f"\nModel: {EMBEDDING_MODEL_NAME}"
+        "\n" + "=" * 70
     )
 
     print(
-        f"Dimension: {EMBEDDING_DIMENSION}"
+        "INGESTION COMPLETE"
     )
 
     print(
-        f"Chunks: {len(chunks)}"
+        "=" * 70
+    )
+
+    print(
+        f"\nModel: "
+        f"{EMBEDDING_MODEL_NAME}"
+    )
+
+    print(
+        f"Dimension: "
+        f"{EMBEDDING_DIMENSION}"
+    )
+
+    print(
+        f"Chunks: "
+        f"{len(chunks)}"
     )
 
 
@@ -601,4 +936,5 @@ def main():
 # ============================================================
 
 if __name__ == "__main__":
+
     main()
